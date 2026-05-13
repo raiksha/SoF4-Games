@@ -83,7 +83,7 @@ function HeroCarousel({ games }: { games: Game[] }) {
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(90deg, rgba(5,1,13,0.95) 0%, rgba(5,1,13,0.7) 40%, rgba(5,1,13,0.15) 70%, rgba(5,1,13,0) 100%)',
+          background: 'linear-gradient(90deg, rgba(5,1,13,1) 0%, rgba(5,1,13,1) 40%, rgba(5,1,13,0.7) 50%, rgba(5,1,13,0) 60%)',
         }}
       />
       {/* Degradado inferior para que el texto del fondo no compita */}
@@ -379,7 +379,7 @@ function GameSection({ title, games, linkTo }: { title: string; games: Game[]; l
 
   return (
     <section className="mb-14">
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between" style={{ marginTop: '2rem', marginBottom: '2rem', }}>
         <h2
           className="text-xl font-bold"
           style={{ fontFamily: 'var(--font-title)', color: 'var(--color-text)' }}
@@ -425,7 +425,15 @@ export default function StorePage() {
       <HeroCarousel games={heroGames} />
 
       {/* Secciones — contenidas en max-w */}
-      <div className="max-w-6xl mx-auto px-6 py-10">
+      <div 
+        className="w-full py-10" 
+        style={{ 
+          paddingLeft: 'clamp(1rem, 5vw, 5rem)', 
+          paddingRight: 'clamp(1rem, 5vw, 5rem)',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(255,0,208,0.07) 50%, transparent 100%)',
+          borderRadius: 'var(--radius-card)',
+        }}
+      >
         <GameSection title="Rebajas"         games={saleGames}     linkTo="/store/sales"     />
         <GameSection title="Lo más reciente"  games={recentGames}   linkTo="/store/new"       />
         <GameSection title="Mejor valorados"  games={topRatedGames} linkTo="/store/top-rated" />
