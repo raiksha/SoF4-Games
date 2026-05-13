@@ -6,7 +6,7 @@
   --color-bg:           #05010d;
   --color-bg-card:      #0d031f;
   --color-bg-nav:       rgba(5, 1, 13, 0.98);
-  --color-border:       rgba(0, 212, 255, 0.2);
+  --color-border:       rgba(255, 0, 208, 0.2);
   --color-accent:       #ff00d0;
   --color-accent-alt:   #00f2ff;
   --color-text:         #ffffff;
@@ -25,6 +25,10 @@
 
   /* Espaciado base */
   --nav-height:         64px;
+
+  @media (max-width: 1023px) {
+    --nav-height: 112px;
+  }
 
   /* Efectos */
   --glow-accent:        0 0 20px rgba(255, 0, 208, 0.4);
@@ -111,4 +115,21 @@ img {
 
 .animate-fade-in {
   animation: fadeIn 0.3s ease forwards;
+}
+
+.nav-tab {
+  padding: 4px 8px;
+}
+
+@media (min-width: 1024px) {
+  .nav-tab {
+    padding: 6px 16px;
+  }
+}
+
+/* Altura del navbar — más alto en mobile por la barra de búsqueda */
+@media (max-width: 1023px) {
+  :root {
+    --nav-height: 112px;
+  }
 }
