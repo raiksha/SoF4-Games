@@ -1,7 +1,7 @@
 // pages/GamePage.tsx
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ShoppingCart, Heart, Gift, ChevronRight, Star, Monitor, Cpu, MemoryStick, HardDrive } from 'lucide-react'
+import { ShoppingCart, Heart, Gift, ChevronRight } from 'lucide-react'
 import { mockGames } from '../data/mockGames'
 import type { Game } from '../types'
 
