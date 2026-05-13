@@ -121,10 +121,11 @@ function HeroCarousel({ games }: { games: Game[] }) {
                 key={g.id}
                 className="px-2.5 py-1 rounded text-xs font-semibold"
                 style={{
-                  border:     '1px solid var(--color-accent)',
-                  color:      'var(--color-accent)',
+                  border:     '1px solid rgba(255,0,208,0.4)',
+                  color:      'rgba(255,0,208,0.7)',
                   fontFamily: 'var(--font-cta)',
-                  background: 'rgba(255,0,208,0.12)',
+                  background: 'rgba(255,0,208,0.08)',
+                  padding:    '3px 10px',
                 }}
               >
                 {g.description}
