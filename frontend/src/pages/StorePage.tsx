@@ -115,7 +115,7 @@ function HeroCarousel({ games }: { games: Game[] }) {
           style={{ paddingLeft: 'clamp(1.25rem, 5vw, 0px)', paddingRight: 'clamp(1.25rem, 5vw, 0px)' }}
         >
           {/* Tags de género */}
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-6" style={{ marginBottom: '1rem' }}>
             {game.genres.slice(0, 2).map(g => (
               <span
                 key={g.id}
@@ -135,12 +135,13 @@ function HeroCarousel({ games }: { games: Game[] }) {
 
           {/* Título */}
           <h1
-            className="font-black mb-3 leading-tight"
+            className="font-black mb-4 leading-tight"
             style={{
               fontFamily: 'var(--font-title)',
               fontSize:   'clamp(2rem, 4vw, 3.5rem)',
               textShadow: '0 2px 24px rgba(0,0,0,0.9)',
               color:      '#fff',
+              marginBottom: '0.5rem',
             }}
           >
             {game.name}
@@ -148,18 +149,19 @@ function HeroCarousel({ games }: { games: Game[] }) {
 
           {/* Descripción */}
           <p
-            className="text-sm mb-5 line-clamp-2"
+            className="text-sm mb-6 line-clamp-2"
             style={{
               color:      'rgba(255,255,255,0.75)',
               fontFamily: 'var(--font-body)',
               lineHeight: '1.6',
+              marginBottom: '1.5rem',
             }}
           >
             {game.short_description}
           </p>
 
           {/* Precio */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-7" style={{ marginBottom: '1.75rem' }}>
             {game.is_free ? (
               <span className="text-2xl font-bold" style={{ color: 'var(--color-accent-alt)', fontFamily: 'var(--font-price)' }}>
                 Gratis
