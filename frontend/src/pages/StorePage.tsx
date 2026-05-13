@@ -430,6 +430,7 @@ export default function StorePage() {
         style={{ 
           paddingLeft: 'clamp(1rem, 5vw, 5rem)', 
           paddingRight: 'clamp(1rem, 5vw, 5rem)',
+          paddingBottom: '4rem',
           background: 'linear-gradient(180deg, transparent 0%, rgba(255,0,208,0.07) 50%, transparent 100%)',
           borderRadius: 'var(--radius-card)',
         }}

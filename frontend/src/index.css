@@ -133,3 +133,10 @@ img {
     --nav-height: 112px;
   }
 }
+/* Columnas del footer */
+@media (max-width: 767px) {
+  .footer-col + .footer-col {
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.5rem;
+  }
+}
