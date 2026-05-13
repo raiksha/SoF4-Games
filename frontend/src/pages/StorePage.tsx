@@ -34,6 +34,7 @@ function HeroCarousel({ games }: { games: Game[] }) {
   const navigate   = useNavigate()
   const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const touchStartX = useRef<number | null>(null)
+  const isMobile = window.innerWidth < 1024
 
   const goTo = useCallback((index: number) => {
     if (animating) return
@@ -84,6 +85,10 @@ function HeroCarousel({ games }: { games: Game[] }) {
         className="absolute inset-0"
         style={{
           background: 'linear-gradient(90deg, rgba(5,1,13,1) 0%, rgba(5,1,13,1) 40%, rgba(5,1,13,0.7) 50%, rgba(5,1,13,0) 60%)',
+          // En mobile: gradiente vertical desde abajo
+          ...(isMobile ? {
+            background: 'linear-gradient(180deg, rgba(5,1,13,0.3) 0%, rgba(5,1,13,0.85) 60%, rgba(5,1,13,1) 100%)'
+          } : {})
         }}
       />
       {/* Degradado inferior para que el texto del fondo no compita */}
