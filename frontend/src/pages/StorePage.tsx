@@ -111,7 +111,7 @@ function HeroCarousel({ games }: { games: Game[] }) {
 
         {/* Contenido — ocupa el espacio restante hasta el botón next */}
         <div 
-          className="flex flex-col justify-center flex-1 max-w-lg pl-5 pr-5 lg:pl-0 lg:pr-0"
+          className="flex flex-col justify-center flex-1 max-w-lg"
           style={{ paddingLeft: 'clamp(1.25rem, 5vw, 0px)', paddingRight: 'clamp(1.25rem, 5vw, 0px)' }}
         >
           {/* Tags de género */}
