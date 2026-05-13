@@ -103,8 +103,16 @@ function HeroCarousel({ games }: { games: Game[] }) {
           onClick={() => { if (timerRef.current) clearTimeout(timerRef.current); goTo(current - 1) }}
           className="hidden lg:flex flex-shrink-0 ml-8 w-15 items-center justify-center transition-all duration-200"
           style={{ color: 'rgba(255,255,255,0.6)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--color-accent)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)' }}
+          onMouseEnter={e => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color      = 'var(--color-accent)'
+            el.style.background = 'linear-gradient(90deg, rgba(255,0,208,0.15) 0%, transparent 100%)'
+          }}
+          onMouseLeave={e => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color      = 'rgba(255,255,255,0.6)'
+            el.style.background = 'transparent'
+          }}
         >
           <ChevronLeft size={28} />
         </button>
@@ -232,8 +240,16 @@ function HeroCarousel({ games }: { games: Game[] }) {
           onClick={() => { if (timerRef.current) clearTimeout(timerRef.current); goTo(current + 1) }}
           className="hidden lg:flex flex-shrink-0 mr-8 w-15 items-center justify-center transition-all duration-200"
           style={{ color: 'rgba(255,255,255,0.6)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--color-accent)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)' }}
+          onMouseEnter={e => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color      = 'var(--color-accent)'
+            el.style.background = 'linear-gradient(270deg, rgba(255,0,208,0.15) 0%, transparent 100%)'
+          }}
+          onMouseLeave={e => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color      = 'rgba(255,255,255,0.6)'
+            el.style.background = 'transparent'
+          }}
         >
           <ChevronRight size={28} />
         </button>
