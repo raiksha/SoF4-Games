@@ -300,7 +300,7 @@ function GameCard({ game }: { game: Game }) {
       onClick={() => navigate(`/game/${game.steam_appid}`)}
     >
       {/* Imagen con zoom sutil en hover */}
-      <div className="overflow-hidden flex-shrink-0" style={{ height: '160px' }}>
+      <div className="overflow-hidden flex-shrink-0" style={{ height: '140px' }}>
         <img
           src={game.header_image}
           alt={game.name}
@@ -323,9 +323,9 @@ function GameCard({ game }: { game: Game }) {
       )}
 
       {/* Info */}
-      <div className="p-3 flex flex-col gap-1.5 flex-1">
+      <div className="flex flex-col flex-1" style={{ padding: '0.875rem', gap: '0.5rem' }}>
         <h3
-          className="text-sm font-semibold line-clamp-1"
+          className="text-base font-semibold line-clamp-1"
           style={{
             fontFamily: 'var(--font-title)',
             color:      hovered ? '#fff' : 'var(--color-text)',
@@ -343,7 +343,7 @@ function GameCard({ game }: { game: Game }) {
         </p>
 
         {/* Precio */}
-        <div className="flex items-center gap-2 mt-auto pt-1.5 flex-wrap">
+        <div className="flex items-center gap-2 mt-1 flex-wrap">
           {game.is_free ? (
             <span className="text-sm font-bold" style={{ color: 'var(--color-accent-alt)', fontFamily: 'var(--font-price)' }}>
               Gratis
@@ -370,21 +370,24 @@ function GameCard({ game }: { game: Game }) {
         </div>
 
         {/* Botón añadir al carrito */}
-        <button
-          className="w-full mt-2 py-2 rounded-md text-xs font-semibold transition-all duration-200"
-          style={{
-            fontFamily: 'var(--font-cta)',
-            background: hovered
-              ? 'linear-gradient(135deg, var(--color-accent), var(--color-accent-alt))'
-              : 'rgba(255,255,255,0.04)',
-            color:      hovered ? '#fff' : 'var(--color-text-muted)',
-            border:     `1px solid ${hovered ? 'transparent' : 'var(--color-border)'}`,
-            boxShadow:  hovered ? 'var(--glow-accent)' : 'none',
-          }}
-          onClick={e => { e.stopPropagation() /* TODO: addToCart */ }}
-        >
-          Añadir al carrito
-        </button>
+        <div style={{ marginTop: 'auto' }}>
+          <button
+            className="w-full mt-2 py-2 rounded-md text-xs font-semibold transition-all duration-200"
+            style={{
+              fontFamily: 'var(--font-cta)',
+              background: hovered
+                ? 'linear-gradient(135deg, var(--color-accent), var(--color-accent-alt))'
+                : 'rgba(255,255,255,0.04)',
+              color:      hovered ? '#fff' : 'var(--color-text-muted)',
+              border:     `1px solid ${hovered ? 'transparent' : 'var(--color-border)'}`,
+              boxShadow:  hovered ? 'var(--glow-accent)' : 'none',
+              padding: '8px 0',
+            }}
+            onClick={e => { e.stopPropagation() /* TODO: addToCart */ }}
+          >
+            Añadir al carrito
+          </button>
+        </div>
       </div>
     </article>
   )
