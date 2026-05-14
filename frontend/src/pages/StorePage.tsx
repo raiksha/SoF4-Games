@@ -384,7 +384,7 @@ function GameCard({ game }: { game: Game }) {
                 ? 'linear-gradient(135deg, var(--color-accent), var(--color-accent-alt))'
                 : 'rgba(255,255,255,0.04)',
               color:      hovered ? '#fff' : 'var(--color-text-muted)',
-              border:     `1px solid ${hovered ? 'transparent' : 'var(--color-border)'}`,
+              border:     hovered ? 'none' : `1px solid var(--color-border)`,
               boxShadow:  hovered ? 'var(--glow-accent)' : 'none',
               padding: '8px 0',
             }}
