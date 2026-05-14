@@ -305,7 +305,7 @@ function GameCard({ game }: { game: Game }) {
       onClick={() => navigate(`/game/${game.steam_appid}`)}
     >
       {/* Imagen con zoom sutil en hover */}
-      <div className="overflow-hidden flex-shrink-0" style={{ height: '140px' }}>
+      <div className="overflow-hidden flex-shrink-0" style={{ height: '160px' }}>
         <img
           src={game.header_image}
           alt={game.name}
