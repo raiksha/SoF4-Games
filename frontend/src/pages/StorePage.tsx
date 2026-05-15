@@ -73,7 +73,7 @@ function HeroCarousel({ games }: { games: Game[] }) {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${game.background_raw || game.header_image})`,
+          backgroundImage: `url(${game.screenshots?.[0]?.path_full || game.header_image})`,
           transition: 'opacity 0.4s ease',
           opacity: animating ? 0 : 1,
         }}
@@ -84,7 +84,7 @@ function HeroCarousel({ games }: { games: Game[] }) {
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(90deg, rgba(5,1,13,1) 0%, rgba(5,1,13,1) 40%, rgba(5,1,13,0.7) 50%, rgba(5,1,13,0) 60%)',
+          background: 'linear-gradient(90deg, rgba(5,1,13,0.95) 0%, rgba(5,1,13,0.8) 20%, rgba(5,1,13,0.7) 40%, rgba(5,1,13,0) 60%)',
           // En mobile: gradiente vertical desde abajo
           ...(isMobile ? {
             background: 'linear-gradient(180deg, rgba(5,1,13,0.3) 0%, rgba(5,1,13,0.85) 60%, rgba(5,1,13,1) 100%)'
