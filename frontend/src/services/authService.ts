@@ -4,9 +4,9 @@ export interface AuthResponse {
     email: string;
 }
 
-export const registro = async (email: string, password: string): Promise<AuthResponse> => {
+export const register = async (email: string, password: string): Promise<AuthResponse> => {
 
-    const respuesta = await fetch('/api/v1/auth/register', {
+    const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -14,10 +14,10 @@ export const registro = async (email: string, password: string): Promise<AuthRes
         body: JSON.stringify({ email, password }),
     });
 
-    if (!respuesta.ok) {
+    if (!response.ok) {
         let errorMessage = 'Ocurrió un error en el servidor';
         try {
-            const errorData = await respuesta.json();
+            const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
         } catch (e) {
         }
@@ -25,7 +25,7 @@ export const registro = async (email: string, password: string): Promise<AuthRes
         throw new Error(errorMessage);
     }
 
-    const data: AuthResponse = await respuesta.json();
+    const data: AuthResponse = await response.json();
 
     return data;
 };
