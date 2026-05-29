@@ -61,7 +61,7 @@ export default function GameCard({
       )}
 
       {/* Info */}
-      <div className="flex flex-col flex-1" style={{ padding: '0.875rem', gap: '0.5rem' }}>
+      <div className="flex flex-col flex-1" style={{ padding: compact ? '0.5rem' : '0.875rem', gap: '0.5rem' }}>
         <h3
           className="text-base font-semibold line-clamp-1"
           style={{
