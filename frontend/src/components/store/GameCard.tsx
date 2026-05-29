@@ -14,7 +14,6 @@ interface GameCardProps {
 
 export default function GameCard({
   game,
-  showDescription = true,
   showGenres = true,
   compact = false,
   showCartButton = true,
