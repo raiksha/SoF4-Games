@@ -267,8 +267,4 @@ export const mockGames: Game[] = [
     website: 'https://www.celestegame.com',
     controller_support: 'full',
   },
-<<<<<<< HEAD
 ]
-=======
-]
->>>>>>> develop
