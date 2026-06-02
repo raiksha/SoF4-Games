@@ -27,13 +27,11 @@ public class FriendshipService {
      */
     public Friendship sendRequest(UUID requesterId, UUID addresseeId) {
 
-        // Regla 1: no puedes enviarte una solicitud a ti mismo
         if (requesterId.equals(addresseeId)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "No puedes agregarte a ti mismo");
         }
 
-        // Regla 2: no puede existir una solicitud en ninguna dirección (A→B ni B→A)
         boolean alreadyExists =
                 friendshipRepository.existsByRequesterIdAndAddresseeId(requesterId, addresseeId) ||
                         friendshipRepository.existsByRequesterIdAndAddresseeId(addresseeId, requesterId);
@@ -43,7 +41,6 @@ public class FriendshipService {
                     HttpStatus.CONFLICT, "Solicitud ya existente");
         }
 
-        // Cargamos ambos usuarios para asignarlos a la entidad
         User requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Usuario solicitante no encontrado"));
@@ -52,7 +49,6 @@ public class FriendshipService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Usuario destinatario no encontrado"));
 
-        // Creamos y guardamos la solicitud con status = "PENDING"
         Friendship friendship = Friendship.builder()
                 .requester(requester)
                 .addressee(addressee)
@@ -76,7 +72,6 @@ public class FriendshipService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Solicitud de amistad no encontrada"));
 
-        // Solo el destinatario puede aceptar — no el que la envió
         if (!friendship.getAddressee().getId().equals(userId)) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "Solo el destinatario puede aceptar esta solicitud");

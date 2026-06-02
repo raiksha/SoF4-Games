@@ -23,17 +23,14 @@ public class Friendship {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // El usuario que envió la solicitud
     @ManyToOne(optional = false)
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;
 
-    // El usuario que recibió la solicitud
     @ManyToOne(optional = false)
     @JoinColumn(name = "addressee_id", nullable = false)
     private User addressee;
 
-    // Estado: "PENDING" al crear, "ACCEPTED" al aceptar, "BLOCKED" en el futuro
     @Column(nullable = false)
     @Builder.Default
     private String status = "PENDING";
