@@ -1,6 +1,7 @@
 package com.sofagames.backend.friendship.controller;
 
 import com.sofagames.backend.auth.entity.User;
+import com.sofagames.backend.friendship.dto.FriendDTO;
 import com.sofagames.backend.friendship.dto.FriendRequestDTO;
 import com.sofagames.backend.friendship.model.Friendship;
 import com.sofagames.backend.friendship.service.FriendshipService;
@@ -11,12 +12,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/friends")
 @RequiredArgsConstructor
 public class FriendController {
 
     private final FriendshipService friendshipService;
+
+    /**
+     * GET /api/v1/friends
+     * Devuelve la lista de amigos aceptados del usuario autenticado.
+     * Requiere JWT válido en el header Authorization.
+     *
+     * Respuesta: 200 OK con List<FriendDTO>.
+     */
+    @GetMapping
+    public ResponseEntity<List<FriendDTO>> getFriends(
+            @AuthenticationPrincipal User currentUser
+    ) {
+        return ResponseEntity.ok(friendshipService.getFriends(currentUser.getId()));
+    }
 
     /**
      * POST /api/v1/friends/request

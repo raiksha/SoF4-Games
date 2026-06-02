@@ -2,6 +2,7 @@ package com.sofagames.backend.friendship.service;
 
 import com.sofagames.backend.auth.entity.User;
 import com.sofagames.backend.auth.repository.UserRepository;
+import com.sofagames.backend.friendship.dto.FriendDTO;
 import com.sofagames.backend.friendship.model.Friendship;
 import com.sofagames.backend.friendship.repository.FriendshipRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -79,5 +81,35 @@ public class FriendshipService {
 
         friendship.setStatus("ACCEPTED");
         return friendshipRepository.save(friendship);
+    }
+
+    /**
+     * Devuelve la lista de amigos aceptados del usuario.
+     * Cada amistad puede tener al usuario como requester O como addressee,
+     * así que para cada fila identificamos quién es "el otro".
+     *
+     * @param userId UUID del usuario autenticado
+     * @return lista de FriendDTO con los datos del perfil de cada amigo
+     */
+    public List<FriendDTO> getFriends(UUID userId) {
+
+        return friendshipRepository
+                .findAcceptedFriendships(userId, "ACCEPTED")
+                .stream()
+                .map(friendship -> {
+                    User friend = friendship.getRequester().getId().equals(userId)
+                            ? friendship.getAddressee()
+                            : friendship.getRequester();
+
+                    var profile = friend.getUserProfile();
+
+                    return new FriendDTO(
+                            friend.getId(),
+                            profile != null ? profile.getDisplayName() : null,
+                            profile != null ? profile.getUsername()    : null,
+                            profile != null ? profile.getAvatarUrl()   : null
+                    );
+                })
+                .toList();
     }
 }
