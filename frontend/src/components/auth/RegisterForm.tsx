@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { register } from '../../services/authService'
+import { validatePassword } from '../../utils/passwordValidation'
 
 import AuthInput from './AuthInput'
 import AuthError from './AuthError'
@@ -32,6 +33,13 @@ export default function RegisterForm() {
 
             setLoading(true)
 
+            const passwordValidationError = validatePassword(password)
+
+            if (passwordValidationError) {
+                setError(passwordValidationError)
+                return
+            }
+
             const response = await register(email, password)
 
             localStorage.setItem('token', response.token)
@@ -52,6 +60,11 @@ export default function RegisterForm() {
             setLoading(false)
         }
     }
+
+    const passwordError =
+        password.length > 0
+            ? validatePassword(password)
+            : null
 
     return (
         <form
@@ -74,6 +87,28 @@ export default function RegisterForm() {
                 onChange={setPassword}
                 required
             />
+
+            {passwordError && (
+                <p
+                    className="text-xs mt-2"
+                    style={{
+                        color: '#ff8aa8',
+                    }}
+                >
+                    {passwordError}
+                </p>
+            )}
+
+            <p
+                className="text-xs mt-2"
+                style={{
+                    color: 'var(--color-text-muted)',
+                }}
+            >
+                La contraseña debe contener al menos 8 caracteres,
+                una mayúscula, una minúscula, un número y un carácter especial.
+            </p>
+
 
             <AuthInput
                 label="Confirmar contraseña"
