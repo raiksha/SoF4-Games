@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { register } from '../../services/authService'
 import { validatePassword } from '../../utils/passwordValidation'
+import { usernameValidation } from '../../utils/usernameValidation';
 
 import AuthInput from './AuthInput'
 import AuthError from './AuthError'
@@ -14,6 +15,7 @@ export default function RegisterForm() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [username, setUsername] = useState('')
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -40,11 +42,18 @@ export default function RegisterForm() {
                 return
             }
 
-            const response = await register(email, password)
+            const usernameValidationError = usernameValidation(username)
+
+            if (usernameValidationError) {
+                setError(usernameValidationError)
+                return
+            }
+
+            const response = await register( email, password, username )
 
             localStorage.setItem('token', response.token)
-            localStorage.setItem('userId', response.userId)
             localStorage.setItem('email', response.email)
+            localStorage.setItem('username', response.username)
 
             navigate('/')
 
@@ -71,6 +80,25 @@ export default function RegisterForm() {
             onSubmit={handleSubmit}
             className="flex flex-col gap-5"
         >
+            
+            <AuthInput 
+                label="Nombre de usuario" 
+                value={username} 
+                onChange={setUsername} 
+                required 
+            />
+
+            <p
+                className="text-xs mt-2"
+                style={{
+                    color: 'var(--color-text-muted)',
+                    marginBottom: '0.5rem',
+                }}
+            >
+                Mínimo 3 caracteres.
+                Puede contener letras, números,
+                . _ - ! ?
+            </p>
 
             <AuthInput
                 label="Email"

@@ -2,18 +2,22 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api/v1'
 
 export interface AuthResponse {
     token: string;
-    userId: string;
     email: string;
+    username: string;
 }
 
-export const register = async (email: string, password: string): Promise<AuthResponse> => {
+export const register = async (
+    email: string, 
+    password: string, 
+    username: string,
+): Promise<AuthResponse> => {
 
     const response = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, username }),
     });
 
     if (!response.ok) {

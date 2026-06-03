@@ -29,8 +29,8 @@ export default function LoginForm() {
             const response = await login(email, password)
 
             localStorage.setItem('token', response.token)
-            localStorage.setItem('userId', response.userId)
             localStorage.setItem('email', response.email)
+            localStorage.setItem('username', response.username)
 
             navigate('/')
 
