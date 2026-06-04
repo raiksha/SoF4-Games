@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .isActive(true)
                 .build();
 
         UserProfile profile = UserProfile.builder()
