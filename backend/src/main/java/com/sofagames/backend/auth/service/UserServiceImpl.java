@@ -62,4 +62,9 @@ public class UserServiceImpl implements UserService {
         String username = user.getUserProfile() != null ? user.getUserProfile().getUsername() : "";
         return new AuthResponse(token, user.getEmail(), username);
     }
+
+    @Override
+    public boolean isUsernameAvailable(String username) {
+        return !userRepository.existsByUserProfileUsername(username);
+    }
 }

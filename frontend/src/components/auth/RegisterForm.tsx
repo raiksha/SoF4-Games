@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { register } from '../../services/authService'
+import { register, checkUsernameAvailability } from '../../services/authService'
 import { validatePassword } from '../../utils/passwordValidation'
 import { usernameValidation } from '../../utils/usernameValidation';
 
@@ -16,9 +16,30 @@ export default function RegisterForm() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
+    const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null)
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (username.length < 3) {
+            setUsernameAvailable(null)
+            return
+        }
+
+        const timeout = setTimeout(async () => {
+                try {
+                    const available = await checkUsernameAvailability(username)
+                    setUsernameAvailable(available)
+                } catch {
+                    setUsernameAvailable(null)
+                }
+            },
+            800,
+        )
+
+        return () => clearTimeout(timeout)
+    }, [username])
 
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 
@@ -32,18 +53,15 @@ export default function RegisterForm() {
         }
 
         try {
-
             setLoading(true)
 
             const passwordValidationError = validatePassword(password)
-
             if (passwordValidationError) {
                 setError(passwordValidationError)
                 return
             }
 
             const usernameValidationError = usernameValidation(username)
-
             if (usernameValidationError) {
                 setError(usernameValidationError)
                 return
@@ -51,6 +69,11 @@ export default function RegisterForm() {
 
             if (password !== confirmPassword) {
                 setError('Las contraseñas no coinciden.')
+                return
+            }
+
+            if (usernameAvailable === false) {
+                setError('El nombre de usuario ya está en uso.')
                 return
             }
 
@@ -75,19 +98,11 @@ export default function RegisterForm() {
         }
     }
 
-    const passwordError =
-        password.length > 0
-            ? validatePassword(password)
-            : null
-    
+    const passwordError = password.length > 0 ? validatePassword(password) : null
     const passwordsMatch = confirmPassword.length === 0 || password === confirmPassword
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-5"
-        >
-            
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <AuthInput 
                 label="Nombre de usuario" 
                 value={username} 
@@ -95,13 +110,19 @@ export default function RegisterForm() {
                 required 
             />
 
-            <p
-                className="text-xs mt-2"
-                style={{
-                    color: 'var(--color-text-muted)',
-                    marginBottom: '0.5rem',
-                }}
-            >
+            {usernameAvailable === true && (
+                <p className="text-xs mt-2" style={{ color: '#4ade80' }}>
+                    Nombre de usuario disponible.
+                </p>
+            )}
+
+            {usernameAvailable === false && (
+                <p className="text-xs mt-2" style={{ color: '#ff8aa8' }}>
+                    El nombre de usuario ya está en uso.
+                </p>
+            )}
+
+            <p className="text-xs mt-2" style={{ color: 'var(--color-text-muted)', marginBottom: '0.5rem' }}>
                 Mínimo 3 caracteres.
                 Puede contener letras, números,
                 . _ - ! ?
@@ -124,26 +145,15 @@ export default function RegisterForm() {
             />
 
             {passwordError && (
-                <p
-                    className="text-xs mt-2"
-                    style={{
-                        color: '#ff8aa8',
-                    }}
-                >
+                <p className="text-xs mt-2" style={{ color: '#ff8aa8' }}>
                     {passwordError}
                 </p>
             )}
 
-            <p
-                className="text-xs mt-2"
-                style={{
-                    color: 'var(--color-text-muted)',
-                }}
-            >
+            <p className="text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
                 La contraseña debe contener al menos 8 caracteres,
                 una mayúscula, una minúscula, un número y un carácter especial.
             </p>
-
 
             <AuthInput
                 label="Confirmar contraseña"
@@ -154,10 +164,7 @@ export default function RegisterForm() {
             />
 
             {!passwordsMatch && (
-                <p
-                    className="text-xs mt-2"
-                    style={{ color: '#ff8aa8' }}
-                >
+                <p className="text-xs mt-2" style={{ color: '#ff8aa8' }}>
                     Las contraseñas no coinciden.
                 </p>
             )}
@@ -180,9 +187,7 @@ export default function RegisterForm() {
                     margin: '0.5rem 0',
                 }}
             >
-                {loading
-                    ? 'Cargando...'
-                    : 'Crear cuenta'}
+                { loading ? 'Cargando...' : 'Crear cuenta' }
             </button>
         </form>
     )

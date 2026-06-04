@@ -61,3 +61,20 @@ export const login = async (email: string, password: string): Promise<AuthRespon
 
     return data;
 };
+
+export const checkUsernameAvailability = async (username: string): Promise<boolean> => {
+    const response = await fetch(`${BASE_URL}/auth/check-username?username=${encodeURIComponent(username)}`)
+
+    if (!response.ok) {
+        let errorMessage = 'No se pudo verificar el nombre de usuario';
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+        }
+
+        throw new Error(errorMessage);
+    }
+    
+    return response.json()
+}
