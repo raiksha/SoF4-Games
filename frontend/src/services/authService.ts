@@ -6,12 +6,7 @@ export interface AuthResponse {
     username: string;
 }
 
-export const register = async (
-    email: string, 
-    password: string, 
-    username: string,
-): Promise<AuthResponse> => {
-
+export const register = async (email: string, password: string, username: string): Promise<AuthResponse> => {
     const response = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
@@ -25,7 +20,8 @@ export const register = async (
         try {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
-        } catch (e) {
+        } catch {
+            // The server did not return a valid JSON.
         }
 
         throw new Error(errorMessage);
@@ -37,7 +33,6 @@ export const register = async (
 };
 
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
-
     const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -51,7 +46,8 @@ export const login = async (email: string, password: string): Promise<AuthRespon
         try {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
-        } catch (e) {
+        } catch {
+            // The server did not return a valid JSON.
         }
 
         throw new Error(errorMessage);
@@ -70,7 +66,8 @@ export const checkUsernameAvailability = async (username: string): Promise<boole
         try {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
-        } catch (e) {
+        } catch {
+            // The server did not return a valid JSON.
         }
 
         throw new Error(errorMessage);
