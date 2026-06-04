@@ -6,6 +6,7 @@ import com.sofagames.backend.auth.dto.RegisterRequest;
 import com.sofagames.backend.auth.entity.User;
 import com.sofagames.backend.auth.entity.UserProfile;
 import com.sofagames.backend.auth.exception.EmailAlreadyExistsException;
+import com.sofagames.backend.auth.exception.UsernameAlreadyExistsException;
 import com.sofagames.backend.auth.repository.UserRepository;
 import com.sofagames.backend.config.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,10 @@ public class UserServiceImpl implements UserService {
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException(request.getEmail());
+        }
+
+        if (userRepository.existsByUserProfileUsername(request.getUsername())) {
+            throw new UsernameAlreadyExistsException(request.getUsername());
         }
 
         User user = User.builder()
