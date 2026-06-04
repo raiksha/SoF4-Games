@@ -4,6 +4,7 @@ export const HERO_APPIDS = [1145360, 2379780, 367520, 646570]
 
 export const mockGames: Game[] = [
   {
+    id: 45,
     steam_appid: 1145360,
     collection: 'indie_global',
     name: 'Hades',
@@ -37,6 +38,7 @@ export const mockGames: Game[] = [
     controller_support: 'full',
   },
   {
+    id: 35, // Goose Goose Duck, not Balatro. Placeholder so it builds. Fix DB later
     steam_appid: 2379780,
     collection: 'indie_global',
     name: 'Balatro',
@@ -70,6 +72,7 @@ export const mockGames: Game[] = [
     controller_support: 'full',
   },
   {
+    id: 25,
     steam_appid: 367520,
     collection: 'indie_global',
     name: 'Hollow Knight',
@@ -103,6 +106,7 @@ export const mockGames: Game[] = [
     controller_support: 'full',
   },
   {
+    id: 35, // Goose Goose Duck, not Balatro. Placeholder so it builds. Fix DB later
     steam_appid: 646570,
     collection: 'indie_global',
     name: 'Slay the Spire',
@@ -136,6 +140,7 @@ export const mockGames: Game[] = [
     controller_support: 'full',
   },
   {
+    id: 41,
     steam_appid: 413150,
     collection: 'indie_global',
     name: 'Stardew Valley',
@@ -169,6 +174,7 @@ export const mockGames: Game[] = [
     controller_support: 'full',
   },
   {
+    id: 35, // Goose Goose Duck, not Balatro. Placeholder so it builds. Fix DB later
     steam_appid: 1456460,
     collection: 'indie_global',
     name: 'Vampire Survivors',
@@ -202,6 +208,7 @@ export const mockGames: Game[] = [
     controller_support: 'full',
   },
   {
+    id: 53,
     steam_appid: 105600,
     collection: 'indie_global',
     name: 'Terraria',
@@ -235,6 +242,7 @@ export const mockGames: Game[] = [
     controller_support: 'full',
   },
   {
+    id: 44,
     steam_appid: 504230,
     collection: 'indie_global',
     name: 'Celeste',

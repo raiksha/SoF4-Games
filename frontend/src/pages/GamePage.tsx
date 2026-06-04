@@ -65,6 +65,7 @@ export default function GamePage() {
     const game = state.game
 
     const gameForComponents: Game = {
+        id:                   game.id,
         steam_appid:          game.steamAppId,
         collection:           'top_steam',
         name:                 game.name,
