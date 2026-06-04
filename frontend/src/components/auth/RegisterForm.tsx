@@ -49,6 +49,11 @@ export default function RegisterForm() {
                 return
             }
 
+            if (password !== confirmPassword) {
+                setError('Las contraseñas no coinciden.')
+                return
+            }
+
             const response = await register( email, password, username )
 
             localStorage.setItem('token', response.token)
@@ -74,6 +79,8 @@ export default function RegisterForm() {
         password.length > 0
             ? validatePassword(password)
             : null
+    
+    const passwordsMatch = confirmPassword.length === 0 || password === confirmPassword
 
     return (
         <form
@@ -145,6 +152,15 @@ export default function RegisterForm() {
                 onChange={setConfirmPassword}
                 required
             />
+
+            {!passwordsMatch && (
+                <p
+                    className="text-xs mt-2"
+                    style={{ color: '#ff8aa8' }}
+                >
+                    Las contraseñas no coinciden.
+                </p>
+            )}
 
             {error && (
                 <AuthError message={error} />
