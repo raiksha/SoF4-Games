@@ -11,6 +11,7 @@ export default function HeroCarousel({ games }: { games: Game[] }) {
   const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const touchStartX = useRef<number | null>(null)
   const isMobile    = window.innerWidth < 1024
+  const [hovered, setHovered] = useState(false)
 
   const goTo = useCallback((index: number) => {
     if (animating) return
@@ -115,32 +116,43 @@ export default function HeroCarousel({ games }: { games: Game[] }) {
             ))}
           </div>
 
-          {/* Título */}
-          <h1
-            className="font-black mb-4 leading-tight"
+          <div
+            onClick={() => navigate(`/game/${game.id}`)}
             style={{
-              fontFamily:   'var(--font-title)',
-              fontSize:     'clamp(2rem, 4vw, 3.5rem)',
-              textShadow:   '0 2px 24px rgba(0,0,0,0.9)',
-              color:        '#fff',
-              marginBottom: '0.5rem',
+              cursor: 'pointer',
+              transform: hovered ? 'translateY(-6px) scale(1.01)' : 'translateY(0) scale(1)',
+              transition:   'all 0.25s ease',
             }}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
           >
-            {game.name}
-          </h1>
+            {/* Título */}
+            <h1
+              className="font-black mb-4 leading-tight"
+              style={{
+                fontFamily:   'var(--font-title)',
+                fontSize:     'clamp(2rem, 4vw, 3.5rem)',
+                textShadow:   '0 2px 24px rgba(0,0,0,0.9)',
+                color:        '#fff',
+                marginBottom: '0.5rem',
+              }}
+            >
+              {game.name}
+            </h1>
 
-          {/* Descripción */}
-          <p
-            className="text-sm mb-6 line-clamp-2"
-            style={{
-              color:        'rgba(255,255,255,0.75)',
-              fontFamily:   'var(--font-body)',
-              lineHeight:   '1.6',
-              marginBottom: '1.5rem',
-            }}
-          >
-            {game.short_description}
-          </p>
+            {/* Descripción */}
+            <p
+              className="text-sm mb-6 line-clamp-2"
+              style={{
+                color:        'rgba(255,255,255,0.75)',
+                fontFamily:   'var(--font-body)',
+                lineHeight:   '1.6',
+                marginBottom: '1.5rem',
+              }}
+            >
+              {game.short_description}
+            </p>
+          </div>
 
           {/* Precio */}
           <div className="flex items-center gap-3 mb-7" style={{ marginBottom: '1.75rem' }}>
