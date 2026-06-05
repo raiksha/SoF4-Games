@@ -75,7 +75,7 @@ export default function HeroCarousel({ games }: { games: Game[] }) {
         {/* Botón prev */}
         <button
           onClick={() => { if (timerRef.current) clearTimeout(timerRef.current); goTo(current - 1) }}
-          className="hidden lg:flex flex-shrink-0 ml-8 w-15 items-center justify-center transition-all duration-200"
+          className="hidden lg:flex flex-shrink-0 ml-8 w-20 items-center justify-center transition-all duration-200"
           style={{ color: 'rgba(255,255,255,0.6)' }}
           onMouseEnter={e => {
             const el = e.currentTarget as HTMLElement
@@ -213,7 +213,7 @@ export default function HeroCarousel({ games }: { games: Game[] }) {
         {/* Botón next */}
         <button
           onClick={() => { if (timerRef.current) clearTimeout(timerRef.current); goTo(current + 1) }}
-          className="hidden lg:flex flex-shrink-0 mr-8 w-15 items-center justify-center transition-all duration-200"
+          className="hidden lg:flex flex-shrink-0 mr-8 w-20 items-center justify-center transition-all duration-200"
           style={{ color: 'rgba(255,255,255,0.6)' }}
           onMouseEnter={e => {
             const el = e.currentTarget as HTMLElement
