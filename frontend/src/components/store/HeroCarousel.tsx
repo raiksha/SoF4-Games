@@ -187,7 +187,7 @@ export default function HeroCarousel({ games }: { games: Game[] }) {
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLElement
                 el.style.background = 'var(--color-accent-alt)'
-                el.style.boxShadow  = '0 0 32px rgba(0,242,255,0.6), 0 4px 16px rgba(0,0,0,0.4)'
+                el.style.boxShadow  = '0 0 32px rgba(133, 11, 110, 0.5), 0 4px 16px rgba(0,0,0,0.4)'
                 el.style.transform  = 'translateY(-2px)'
               }}
               onMouseLeave={e => {
@@ -204,7 +204,11 @@ export default function HeroCarousel({ games }: { games: Game[] }) {
         </div>
 
         {/* Spacer */}
-        <div className="hidden lg:block flex-1" />
+        <div
+          onClick={() => navigate(`/game/${game.id}`)} 
+          className="hidden lg:block flex-1"
+          style={{ cursor: 'pointer', }}
+        />
 
         {/* Botón next */}
         <button
