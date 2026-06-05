@@ -172,7 +172,7 @@ export default function HeroCarousel({ games }: { games: Game[] }) {
           {/* Botón CTA */}
           <div>
             <button
-              onClick={() => navigate(`/game/${game.steam_appid}`)}
+              onClick={() => navigate(`/game/${game.id}`)}
               className="flex items-center gap-2 font-bold transition-all duration-200"
               style={{
                 fontFamily:    'var(--font-cta)',
