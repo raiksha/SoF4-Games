@@ -187,7 +187,7 @@ export default function GamePage() {
                 </div>
 
                 {/* Tabs de contenido */}
-                <div className="mb-8" style={{ margin: '1rem 0' }}>
+                <div className="mb-8" style={{ margin: '2rem 0' }}>
                     <TabBar active={tab} onChange={setTab} />
                     {tab === 'descripcion' && <TabDescripcion game={gameForComponents} />}
                     {tab === 'requisitos'  && <TabRequisitos  game={gameForComponents} />}
