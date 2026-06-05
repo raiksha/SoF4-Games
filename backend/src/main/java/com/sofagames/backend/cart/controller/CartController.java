@@ -1,10 +1,11 @@
 package com.sofagames.backend.cart.controller;
 
+import com.sofagames.backend.auth.entity.User;
+import com.sofagames.backend.auth.repository.UserRepository;
 import com.sofagames.backend.cart.dto.CartItemDTO;
 import com.sofagames.backend.cart.service.CartService;
-import com.sofagames.backend.auth.repository.UserRepository;
-import com.sofagames.backend.auth.entity.User;
 import com.sofagames.backend.config.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,17 +14,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/cart")
+@RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-
-    public CartController(CartService cartService, JwtUtil jwtUtil, UserRepository userRepository) {
-        this.cartService = cartService;
-        this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
-    }
 
     @GetMapping
     public ResponseEntity<List<CartItemDTO>> getCart(
