@@ -138,10 +138,10 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
                         {/* Carrito */}
                         <Link
                             to="/cart"
-                            className="relative w-9 h-9 flex items-center justify-center rounded-lg transition-all duration-200"
-                            style={{ color: 'var(--color-text-muted)' }}
-                            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.color = '#cc00a6'; el.style.textShadow = '0 0 12px #cc00a6' }}
-                            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.color = 'var(--color-text-muted)'; el.style.textShadow = 'none' }}
+                            className="relative w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200"
+                            style={{ color: 'var(--color-text-muted)', borderColor: 'var(--color-border)', background: 'var(--color-bg-card)' }}
+                            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.color = '#cc00a6'; el.style.borderColor = '#cc00a6'; el.style.boxShadow = '0 0 12px #cc00a6' }}
+                            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.color = 'var(--color-text-muted)'; el.style.borderColor = 'var(--color-border)'; el.style.boxShadow = 'none' }}
                             aria-label="Carrito"
                         >
                             <ShoppingCart size={18} />
