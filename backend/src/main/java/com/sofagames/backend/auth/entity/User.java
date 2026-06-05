@@ -27,6 +27,7 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false)
     private String password;
 
+    @Builder.Default
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 

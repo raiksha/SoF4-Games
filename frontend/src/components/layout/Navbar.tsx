@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ShoppingCart, Search, X, Gamepad2, User, Users } from 'lucide-react'
 import FriendsSidebar from '../FriendsSidebar'
 
@@ -14,6 +14,10 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
     const [sidebarOpen, setSidebarOpen]   = useState(false)
     const searchInputRef                  = useRef<HTMLInputElement>(null)
     const location                        = useLocation()
+    const navigate                        = useNavigate()
+    const [userMenuOpen, setUserMenuOpen] = useState(false)
+    const userMenuRef                     = useRef<HTMLDivElement>(null)
+    const isAuthenticated                 = !!localStorage.getItem('token')
 
     useEffect(() => {
         if (searchOpen) searchInputRef.current?.focus()
@@ -26,8 +30,34 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
         window.addEventListener('keydown', handleKey)
         return () => window.removeEventListener('keydown', handleKey)
     }, [])
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+        if (
+            userMenuRef.current &&
+            !userMenuRef.current.contains(
+                e.target as Node,
+            )
+        ) { setUserMenuOpen(false) }
+        }
+
+        document.addEventListener(
+        'mousedown',
+        handleClickOutside,
+        )
+
+        return () => document.removeEventListener( 'mousedown', handleClickOutside )
+    }, [])
 
     const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/')
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('email')
+        localStorage.removeItem('username')
+
+        navigate('/')
+
+        setUserMenuOpen(false)
+    }
 
     return (
         <>
@@ -142,16 +172,63 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
                         </Link>
 
                         {/* Avatar */}
-                        <Link
-                            to="/profile"
+                        <div className="relative" ref={userMenuRef}>
+                            <button
+                            onClick={() => {
+                                setUserMenuOpen( !userMenuOpen ) 
+                            }}
                             className="w-9 h-9 flex items-center justify-center rounded-full border transition-all duration-200"
-                            style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)', background: 'var(--color-bg-card)' }}
-                            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--color-accent)'; el.style.color = 'var(--color-accent)'; el.style.boxShadow = 'var(--glow-accent)' }}
-                            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--color-border)'; el.style.color = 'var(--color-text-muted)'; el.style.boxShadow = 'none' }}
-                            aria-label="Perfil"
-                        >
+                            style={{
+                                borderColor: 'var(--color-border)',
+                                color: 'var(--color-text-muted)',
+                                background: 'var(--color-bg-card)',
+                            }}
+                            aria-label="Usuario"
+                            >
                             <User size={16} />
-                        </Link>
+                            </button>
+
+                            {userMenuOpen && (
+                            <div
+                                className="absolute right-0 mt-2 w-44 rounded-lg overflow-hidden"
+                                style={{
+                                background: 'var(--color-bg-card)',
+                                border: '1px solid var(--color-border)',
+                                boxShadow: '0 0 20px rgba(0,0,0,0.4)',
+                                padding: '1rem',
+                                }}
+                            >
+                                {isAuthenticated ? (
+                                    <>
+                                    <Link
+                                        to="/profile"
+                                        onClick={() => setUserMenuOpen(false)}
+                                        className="block px-4 py-3 text-sm transition-colors"
+                                        style={{ color: 'var(--color-text)', paddingBottom: '5px', borderBottom: '1px solid var(--color-border)', }}
+                                    >
+                                        Perfil
+                                    </Link>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full text-left px-4 py-3 text-sm transition-colors"
+                                        style={{ color: 'var(--color-text)' }}
+                                    >
+                                        Cerrar sesión
+                                    </button>
+                                    </>
+                                ) : (
+                                <Link
+                                    to="/login"
+                                    onClick={() => setUserMenuOpen(false)}
+                                    className="block px-4 py-3 text-sm"
+                                    style={{ color: 'var(--color-text)' }}
+                                >
+                                    Iniciar sesión
+                                </Link>
+                                )}
+                            </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
