@@ -7,4 +7,5 @@ import com.sofagames.backend.auth.dto.RegisterRequest;
 public interface UserService {
     AuthResponse register(RegisterRequest request);
     AuthResponse login(LoginRequest request);
+    boolean isUsernameAvailable(String username);
 }
