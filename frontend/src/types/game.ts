@@ -66,6 +66,9 @@ export interface Game {
   background_raw:       string
   screenshots:          Screenshot[]
   is_free:              boolean
+  discount_percent:     number
+  price_initial:        number
+  price_final:          number
   price_overview:       PriceOverview | null
   platforms:            Platforms
   release_date:         ReleaseDate
