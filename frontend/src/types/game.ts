@@ -152,7 +152,7 @@ export interface GameDetail {
   supportedLanguages:   string | null
   recommendationsTotal: number
   achievementsTotal:    number
-  systemRequirements:   string | null
+  systemRequirements:   Record<string, SystemRequirements>
   genres:               GameGenre[]
   categories:           GameCategory[]
   developers:           string[]
