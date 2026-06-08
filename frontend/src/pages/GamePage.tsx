@@ -75,9 +75,12 @@ export default function GamePage() {
         capsule_image:        game.headerImage,
         background_raw:       game.backgroundRaw,
         is_free:              game.isFree,
+        discount_percent:     game.discountPercent,
+        price_initial:        game.priceInitial,
+        price_final:          game.priceFinal,
         required_age:         game.requiredAge,
         controller_support:   game.controllerSupport,
-        supported_languages:  game.supportedLanguages ?? '',
+        supported_languages:  stripHtml(game.supportedLanguages ?? ''),
         website:              null,
         metacritic:           null,
         steam_tags:           [],
@@ -199,6 +202,11 @@ export default function GamePage() {
             </div>
         </main>
     )
+}
+
+// ── Helper: elimina etiquetas HTML de un string ──
+function stripHtml(html: string): string {
+    return html.replace(/<[^>]*>/g, '')
 }
 
 // ── Helper: formatea centavos a string legible ──
