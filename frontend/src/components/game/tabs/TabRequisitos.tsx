@@ -3,12 +3,12 @@ import type { Game } from '../../../types'
 function ReqBlock({ title, text }: { title: string; text: string }) {
   return (
     <div className="flex-1">
-      <h4 
-        className="font-semibold mb-3" 
-        style={{ 
-          fontFamily: 'var(--font-title)', 
-          color: 'var(--color-text)', 
-          fontSize: '1rem', 
+      <h4
+        className="font-semibold mb-3"
+        style={{
+          fontFamily: 'var(--font-title)',
+          color: 'var(--color-text)',
+          fontSize: '1rem',
           paddingBottom: '1rem',
         }}
       >
@@ -37,21 +37,18 @@ function ReqBlock({ title, text }: { title: string; text: string }) {
 }
 
 export default function TabRequisitos({ game }: { game: Game }) {
-  const plats = Object.entries(game.system_requirements)
-
+    const plats = Object.entries(game.system_requirements)
   if (!plats.length) {
-    return <p className="py-5" style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>No hay requisitos disponibles.</p>
+      return <p className="py-5" style={{ color: 'var(--color-text-muted)', fontSize: '1rem', marginTop: '1rem', }}>No hay requisitos disponibles.</p>
   }
 
   return (
     <div className="pb-5" style={{ paddingTop: '1.5rem' }}>
       {plats.map(([plat, reqs]) => (
         <div key={plat} className="mb-6">
-          {plats.length > 1 && (
-            <p className="uppercase tracking-widest mb-3" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-title)', fontSize: '0.75rem' }}>
-              {plat === 'pc' ? 'Windows' : plat === 'mac' ? 'macOS' : 'Linux'}
-            </p>
-          )}
+          <p className="uppercase tracking-widest mb-3" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-title)', fontSize: '0.75rem' }}>
+            {plat === 'pc' ? 'Windows' : plat === 'mac' ? 'macOS' : plat === 'linux' ? 'Linux' : plat}
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {reqs.minimum     && <ReqBlock title="Mínimos"      text={reqs.minimum} />}
             {reqs.recommended && <ReqBlock title="Recomendados" text={reqs.recommended} />}

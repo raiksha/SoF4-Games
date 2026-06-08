@@ -3,23 +3,28 @@ package com.sofagames.backend.game.service;
 import com.sofagames.backend.game.entity.*;
 import com.sofagames.backend.game.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Component
-public class GameDataLoader implements ApplicationListener<ApplicationReadyEvent> {
+public class GameDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
-    private final GameRepository gameRepository;
-    private final GenreRepository genreRepository;
-    private final CategoryRepository categoryRepository;
-    private final DeveloperRepository developerRepository;
-    private final PublisherRepository publisherRepository;
+    private boolean alreadyRan = false;
+
+    private final GameRepository       gameRepository;
+    private final GenreRepository      genreRepository;
+    private final CategoryRepository   categoryRepository;
+    private final DeveloperRepository  developerRepository;
+    private final PublisherRepository  publisherRepository;
     private final ScreenshotRepository screenshotRepository;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper         objectMapper;
 
     public GameDataLoader(GameRepository gameRepository,
                           GenreRepository genreRepository,
@@ -28,17 +33,20 @@ public class GameDataLoader implements ApplicationListener<ApplicationReadyEvent
                           PublisherRepository publisherRepository,
                           ScreenshotRepository screenshotRepository,
                           ObjectMapper objectMapper) {
-        this.gameRepository = gameRepository;
-        this.genreRepository = genreRepository;
-        this.categoryRepository = categoryRepository;
-        this.developerRepository = developerRepository;
-        this.publisherRepository = publisherRepository;
+        this.gameRepository       = gameRepository;
+        this.genreRepository      = genreRepository;
+        this.categoryRepository   = categoryRepository;
+        this.developerRepository  = developerRepository;
+        this.publisherRepository  = publisherRepository;
         this.screenshotRepository = screenshotRepository;
-        this.objectMapper = objectMapper;
+        this.objectMapper         = objectMapper;
     }
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        if (alreadyRan) return;  // ← línea nueva
+        alreadyRan = true;
+
         if (gameRepository.count() > 0) {
             System.out.println("Database already contains games. Skipping data load.");
             return;
@@ -47,54 +55,68 @@ public class GameDataLoader implements ApplicationListener<ApplicationReadyEvent
         System.out.println("Loading game data from catalog_final.json...");
         try {
             ClassPathResource resource = new ClassPathResource("catalog_final.json");
-            Map<String, Object> catalog = objectMapper.readValue(resource.getInputStream(), Map.class);
 
-            for (Map.Entry<String, Object> entry : catalog.entrySet()) {
-                String gameId = entry.getKey();
-                try {
+            Object parsed = objectMapper.readValue(resource.getInputStream(), Object.class);
+
+            List<Map<String, Object>> gameList = new ArrayList<>();
+
+            if (parsed instanceof List) {
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> list = (List<Map<String, Object>>) parsed;
+                gameList = list;
+            } else if (parsed instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>) parsed;
+                for (Object val : map.values()) {
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> gameData = (Map<String, Object>) entry.getValue();
+                    Map<String, Object> gameData = (Map<String, Object>) val;
+                    gameList.add(gameData);
+                }
+            }
 
+            for (Map<String, Object> gameData : gameList) {
+                try {
                     Game game = mapToGame(gameData);
-                    Game savedGame = gameRepository.save(game);
+                    Game savedGame = gameRepository.saveAndFlush(game);
 
-                    // Process genres
                     if (gameData.containsKey("genres")) {
                         @SuppressWarnings("unchecked")
                         List<Map<String, Object>> genres = (List<Map<String, Object>>) gameData.get("genres");
                         for (Map<String, Object> genreData : genres) {
-                            Integer id = parseIntSafe(genreData.get("id"));
-                            String name = (String) genreData.get("description") != null ? (String) genreData.get("description") : (String) genreData.get("name");
-                            Genre genre = genreRepository.findById(id)
+                            Integer gid  = parseIntSafe(genreData.get("id"));
+                            String gname = genreData.get("name") != null
+                                    ? (String) genreData.get("name")
+                                    : (String) genreData.get("description");
+                            Genre genre = genreRepository.findById(gid)
                                     .orElseGet(() -> {
                                         Genre g = new Genre();
-                                        g.setId(id);
-                                        g.setName(name != null ? name : "Unknown");
+                                        g.setId(gid);
+                                        g.setName(gname != null ? gname : "Unknown");
                                         return genreRepository.save(g);
                                     });
                             savedGame.getGenres().add(genre);
                         }
                     }
 
-                    // Process categories
                     if (gameData.containsKey("categories")) {
                         @SuppressWarnings("unchecked")
                         List<Map<String, Object>> categories = (List<Map<String, Object>>) gameData.get("categories");
                         for (Map<String, Object> catData : categories) {
-                            Integer id = parseIntSafe(catData.get("id"));
-                            String name = (String) catData.get("description") != null ? (String) catData.get("description") : (String) catData.get("name");
-                            Category category = categoryRepository.findById(id)
+                            Integer cid  = parseIntSafe(catData.get("id"));
+                            String cname = catData.get("name") != null
+                                    ? (String) catData.get("name")
+                                    : (String) catData.get("description");
+                            Category category = categoryRepository.findById(cid)
                                     .orElseGet(() -> {
                                         Category c = new Category();
-                                        c.setId(id);
-                                        c.setName(name != null ? name : "Unknown");
+                                        c.setId(cid);
+                                        c.setName(cname != null ? cname : "Unknown");
                                         return categoryRepository.save(c);
                                     });
-                                    savedGame.getCategories().add(category);
+                            savedGame.getCategories().add(category);
                         }
                     }
 
-                    // Process developers
                     if (gameData.containsKey("developers")) {
                         @SuppressWarnings("unchecked")
                         List<String> developers = (List<String>) gameData.get("developers");
@@ -110,7 +132,6 @@ public class GameDataLoader implements ApplicationListener<ApplicationReadyEvent
                         }
                     }
 
-                    // Process publishers
                     if (gameData.containsKey("publishers")) {
                         @SuppressWarnings("unchecked")
                         List<String> publishers = (List<String>) gameData.get("publishers");
@@ -126,35 +147,36 @@ public class GameDataLoader implements ApplicationListener<ApplicationReadyEvent
                         }
                     }
 
-                    // Process screenshots
                     if (gameData.containsKey("screenshots")) {
                         @SuppressWarnings("unchecked")
                         List<Map<String, Object>> screenshots = (List<Map<String, Object>>) gameData.get("screenshots");
                         for (Map<String, Object> shotData : screenshots) {
                             Screenshot screenshot = new Screenshot();
-                            screenshot.setGame(savedGame);
-                            Object idObj = shotData.get("id");
+                            screenshot.setGameId(savedGame.getId());
+                            Object idObj = shotData.get("steam_id") != null
+                                    ? shotData.get("steam_id")
+                                    : shotData.get("id");
                             screenshot.setSteamId(idObj instanceof Number ? ((Number) idObj).intValue() : 0);
                             screenshot.setPathThumbnail((String) shotData.get("path_thumbnail"));
                             screenshot.setPathFull((String) shotData.get("path_full"));
-                            Integer order = (Integer) shotData.get("display_order");
-                            if (order == null) {
-                                order = screenshot.getSteamId();
-                            }
+                            Integer order = shotData.get("display_order") instanceof Number
+                                    ? ((Number) shotData.get("display_order")).intValue()
+                                    : screenshot.getSteamId();
                             screenshot.setDisplayOrder(order);
                             screenshotRepository.save(screenshot);
                         }
                     }
 
                     gameRepository.save(savedGame);
+
                 } catch (Exception e) {
-                    System.err.println("Error processing game with ID: " + gameId + ". Error: " + e.getMessage());
+                    System.err.println("Error processing game: " + gameData.get("name") + " — " + e.getMessage());
                     e.printStackTrace();
-                    throw e; // Relanzar para detener y ver el error
                 }
             }
 
             System.out.println("Finished loading game data. Total games: " + gameRepository.count());
+
         } catch (Exception e) {
             System.err.println("Error loading game data: " + e.getMessage());
             e.printStackTrace();
@@ -164,63 +186,101 @@ public class GameDataLoader implements ApplicationListener<ApplicationReadyEvent
     private Game mapToGame(Map<String, Object> data) {
         Game game = new Game();
 
-        Object steamAppIdObj = data.get("steam_appid");
-        int steamAppId;
-        if (steamAppIdObj instanceof Integer) {
-            steamAppId = (Integer) steamAppIdObj;
-        } else if (steamAppIdObj instanceof Long) {
-            steamAppId = ((Long) steamAppIdObj).intValue();
-        } else if (steamAppIdObj instanceof String) {
-            steamAppId = Integer.parseInt((String) steamAppIdObj);
-        } else {
-            steamAppId = 0;
-        }
-        game.setSteamAppId(steamAppId);
+        game.setSteamAppId(parseIntSafe(data.get("steam_appid")));
+
+        game.setCollection((String) data.get("collection"));
         game.setName((String) data.get("name"));
         game.setShortDescription((String) data.get("short_description"));
+        game.setDetailedDescription((String) data.get("detailed_description"));
         game.setHeaderImage((String) data.get("header_image"));
         game.setCapsuleImage((String) data.get("capsule_image"));
         game.setBackgroundRaw((String) data.get("background_raw"));
         game.setWebsite((String) data.get("website"));
         game.setIsFree((Boolean) data.getOrDefault("is_free", false));
 
-        // price_overview
-        if (data.containsKey("price_overview") && data.get("price_overview") != null) {
+        if (data.containsKey("price_initial")) {
+            game.setPriceInitial(parseIntSafe(data.get("price_initial")));
+            game.setPriceFinal(parseIntSafe(data.get("price_final")));
+            game.setDiscountPercent(parseIntSafe(data.get("discount_percent")));
+            game.setCurrency((String) data.getOrDefault("currency", "CLP"));
+            game.setPriceInitialFormatted((String) data.get("price_initial_formatted"));
+            game.setPriceFinalFormatted((String) data.get("price_final_formatted"));
+        } else if (data.containsKey("price_overview") && data.get("price_overview") != null) {
             @SuppressWarnings("unchecked")
-            Map<String, Object> priceOverview = (Map<String, Object>) data.get("price_overview");
-            game.setCurrency((String) priceOverview.get("currency"));
-            game.setPriceInitial(parseIntSafe(priceOverview.get("initial")));
-            game.setPriceFinal(parseIntSafe(priceOverview.get("final")));
-            game.setDiscountPercent(parseIntSafe(priceOverview.get("discount_percent")));
+            Map<String, Object> po = (Map<String, Object>) data.get("price_overview");
+            game.setPriceInitial(parseIntSafe(po.get("initial")));
+            game.setPriceFinal(parseIntSafe(po.get("final")));
+            game.setDiscountPercent(parseIntSafe(po.get("discount_percent")));
+            game.setCurrency((String) po.getOrDefault("currency", "CLP"));
         } else {
-            game.setCurrency("CLP");
             game.setPriceInitial(0);
             game.setPriceFinal(0);
             game.setDiscountPercent(0);
+            game.setCurrency("CLP");
         }
 
-        // release_date
-        if (data.containsKey("release_date") && data.get("release_date") != null) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> releaseDate = (Map<String, Object>) data.get("release_date");
-            boolean comingSoon = (Boolean) releaseDate.getOrDefault("coming_soon", false);
-            game.setComingSoon(comingSoon);
-            String dateStr = (String) releaseDate.get("date");
-            if (dateStr != null && !dateStr.isEmpty()) {
-                try {
-                    java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
-                    game.setReleaseDate(java.time.LocalDate.parse(dateStr, formatter));
-                } catch (Exception e) {
-                    // leave null if parsing fails
-                }
+        if (data.containsKey("release_date")) {
+            Object rdObj = data.get("release_date");
+            if (rdObj instanceof String) {
+                game.setReleaseDate(parseDate((String) rdObj));
+            } else if (rdObj instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> rd = (Map<String, Object>) rdObj;
+                game.setComingSoon((Boolean) rd.getOrDefault("coming_soon", false));
+                game.setReleaseDate(parseDateLegacy((String) rd.get("date")));
             }
+        }
+
+        if (data.containsKey("coming_soon")) {
+            game.setComingSoon((Boolean) data.getOrDefault("coming_soon", false));
         }
 
         game.setRequiredAge(((Number) data.getOrDefault("required_age", 0)).intValue());
         game.setControllerSupport((String) data.get("controller_support"));
         game.setSupportedLanguages((String) data.get("supported_languages"));
-        game.setRecommendationsTotal(((Number) data.getOrDefault("recommendations_total", 0)).intValue());
-        game.setAchievementsTotal(((Number) data.getOrDefault("achievements_total", 0)).intValue());
+
+        if (data.containsKey("recommendations_total")) {
+            game.setRecommendationsTotal(parseIntSafe(data.get("recommendations_total")));
+        } else if (data.containsKey("recommendations") && data.get("recommendations") != null) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> rec = (Map<String, Object>) data.get("recommendations");
+            game.setRecommendationsTotal(parseIntSafe(rec.get("total")));
+        }
+
+        if (data.containsKey("achievements_total")) {
+            game.setAchievementsTotal(parseIntSafe(data.get("achievements_total")));
+        } else if (data.containsKey("achievements") && data.get("achievements") != null) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> ach = (Map<String, Object>) data.get("achievements");
+            game.setAchievementsTotal(parseIntSafe(ach.get("total")));
+        }
+
+        if (data.containsKey("platform_windows")) {
+            game.setPlatformWindows((Boolean) data.getOrDefault("platform_windows", false));
+            game.setPlatformMac((Boolean) data.getOrDefault("platform_mac", false));
+            game.setPlatformLinux((Boolean) data.getOrDefault("platform_linux", false));
+        } else if (data.containsKey("platforms") && data.get("platforms") != null) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> platforms = (Map<String, Object>) data.get("platforms");
+            game.setPlatformWindows((Boolean) platforms.getOrDefault("windows", false));
+            game.setPlatformMac((Boolean) platforms.getOrDefault("mac", false));
+            game.setPlatformLinux((Boolean) platforms.getOrDefault("linux", false));
+        }
+
+        game.setReviewScoreDesc((String) data.get("review_score_desc"));
+        game.setTotalPositive(parseIntSafe(data.get("total_positive")));
+        game.setTotalNegative(parseIntSafe(data.get("total_negative")));
+
+        if (data.containsKey("metacritic_score")) {
+            game.setMetacriticScore(data.get("metacritic_score") != null
+                    ? parseIntSafe(data.get("metacritic_score")) : null);
+            game.setMetacriticUrl((String) data.get("metacritic_url"));
+        } else if (data.containsKey("metacritic") && data.get("metacritic") != null) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> mc = (Map<String, Object>) data.get("metacritic");
+            game.setMetacriticScore(parseIntSafe(mc.get("score")));
+            game.setMetacriticUrl((String) mc.get("url"));
+        }
 
         if (data.containsKey("system_requirements") && data.get("system_requirements") != null) {
             try {
@@ -235,11 +295,30 @@ public class GameDataLoader implements ApplicationListener<ApplicationReadyEvent
         return game;
     }
 
+    private LocalDate parseDate(String dateStr) {
+        if (dateStr == null || dateStr.isBlank()) return null;
+        try {
+            return LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    private LocalDate parseDateLegacy(String dateStr) {
+        if (dateStr == null || dateStr.isBlank()) return null;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+            return LocalDate.parse(dateStr, formatter);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
     private int parseIntSafe(Object obj) {
         if (obj == null) return 0;
         if (obj instanceof Integer) return (Integer) obj;
-        if (obj instanceof Long) return ((Long) obj).intValue();
-        if (obj instanceof String) {
+        if (obj instanceof Long)    return ((Long) obj).intValue();
+        if (obj instanceof String)  {
             try { return Integer.parseInt((String) obj); } catch (NumberFormatException e) { return 0; }
         }
         return 0;
