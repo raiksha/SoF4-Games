@@ -47,4 +47,44 @@ export const gameService = {
 
         return response.json() as Promise<GameDetail>
     },
+
+    getFeaturedGames: async (): Promise<Game[]> => {
+        const response = await fetch(`${BASE_URL}/games/featured`)
+
+        if (!response.ok) {
+            throw new Error(`Error al obtener destacados: ${response.status}`)
+        }
+
+        return response.json()
+    },
+
+    getSaleGames: async (): Promise<Game[]> => {
+        const response = await fetch(`${BASE_URL}/games/sales`)
+
+        if (!response.ok) {
+            throw new Error(`Error al obtener rebajas: ${response.status}`)
+        }
+
+        return response.json()
+    },
+
+    getRecentGames: async (): Promise<Game[]> => {
+        const response = await fetch(`${BASE_URL}/games/recent`)
+
+        if (!response.ok) {
+            throw new Error(`Error al obtener recientes: ${response.status}`)
+        }
+
+        return response.json()
+    },
+
+    getTopRatedGames: async (): Promise<Game[]> => {
+        const response = await fetch(`${BASE_URL}/games/top-rated`)
+
+        if (!response.ok) {
+            throw new Error(`Error al obtener mejor valorados: ${response.status}`)
+        }
+
+        return response.json()
+    },
 }

@@ -150,7 +150,8 @@ public class GameService {
     public List<GameSummaryDTO> getFeaturedGames() {
 
         return gameRepository
-                .findAllByOrderByRecommendationsTotalDesc(
+                .findByCollectionOrderByRecommendationsTotalDesc(
+                        "indie_latam",
                         PageRequest.of(0, 4)
                 )
                 .stream()
@@ -161,8 +162,8 @@ public class GameService {
     public List<GameSummaryDTO> getSaleGames() {
 
         return gameRepository
-                .findByDiscountPercentGreaterThanOrderByDiscountPercentDesc(
-                        0,
+                .findDiscountedGames(
+                        List.of("indie_latam", "indie_global"),
                         PageRequest.of(0, 4)
                 )
                 .stream()
@@ -173,7 +174,8 @@ public class GameService {
     public List<GameSummaryDTO> getRecentGames() {
 
         return gameRepository
-                .findAllByOrderByReleaseDateDesc(
+                .findByCollectionInOrderByReleaseDateDesc(
+                        List.of("indie_latam", "indie_global"),
                         PageRequest.of(0, 4)
                 )
                 .stream()
@@ -184,7 +186,8 @@ public class GameService {
     public List<GameSummaryDTO> getTopRatedGames() {
 
         return gameRepository
-                .findAllByOrderByTotalPositiveDesc(
+                .findByCollectionInOrderByTotalPositiveDesc(
+                        List.of("indie_latam", "indie_global"),
                         PageRequest.of(0, 4)
                 )
                 .stream()
