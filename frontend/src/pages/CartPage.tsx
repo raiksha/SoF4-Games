@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCartItems, removeFromCart } from '../services/cartService'
 import { getLibrary } from '../services/libraryService'
+import { useCart } from '../context/CartContext'
 import type { CartItem } from '../services/cartService'
 
-const STEPS    = ['1 Carrito', '2 Pago', '3 Confirmación']
+const STEPS    = ['Carrito', 'Pago', 'Confirmación']
 const COUPON   = 'javalimos24'
 
 export default function CartPage() {
   const navigate = useNavigate()
+  const { refreshCart } = useCart()
   const [items, setItems]               = useState<CartItem[]>([])
   const [loading, setLoading]           = useState(true)
   const [error, setError]               = useState<string | null>(null)
@@ -36,6 +38,7 @@ export default function CartPage() {
     try {
       await removeFromCart(gameId)
       setItems(prev => prev.filter(i => i.gameId !== gameId))
+      refreshCart()
     } catch {
       setError('No se pudo eliminar el juego')
     } finally {

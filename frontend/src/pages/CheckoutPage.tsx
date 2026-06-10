@@ -6,7 +6,7 @@ import type { CartItem, CheckoutResponse } from '../services/cartService'
 
 type PayMethod = 'card' | 'webpay' | 'wallet'
 
-const STEPS = ['1 Carrito', '2 Pago', '3 Confirmación']
+const STEPS = ['Carrito', 'Pago', 'Confirmación']
 
 /* ── Stepper ──────────────────────────────────────────────────────── */
 function Stepper({ active }: { active: 0 | 1 | 2 }) {
@@ -78,15 +78,21 @@ export default function CheckoutPage() {
   const [confirmation, setConfirmation] = useState<CheckoutResponse | null>(null)
   const [method, setMethod]             = useState<PayMethod>('card')
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
+  const [toast, setToast]               = useState(false)
 
-  // Cupón heredado del paso 1 (sessionStorage)
-  const couponFromCart = sessionStorage.getItem('checkout_coupon') ?? ''
-  const hasCoupon = couponFromCart.length > 0
-
-  // Si no hay cupón, forzar wallet como método por defecto
+  // Cupón siempre activo — viene del paso 1 o se auto-aplica aquí
+  const COUPON_CODE = 'javalimos24'
   useEffect(() => {
-    if (!hasCoupon) setMethod('wallet')
-  }, [hasCoupon])
+    const existing = sessionStorage.getItem('checkout_coupon') ?? ''
+    if (!existing) {
+      sessionStorage.setItem('checkout_coupon', COUPON_CODE)
+      setToast(true)
+      setTimeout(() => setToast(false), 4000)
+    }
+  }, [])
+
+  const couponFromCart = sessionStorage.getItem('checkout_coupon') ?? COUPON_CODE
+  const hasCoupon = true
 
   const [cardNum, setCardNum] = useState('')
   const [expiry, setExpiry]   = useState('')
@@ -248,6 +254,21 @@ export default function CheckoutPage() {
   return (
     <main style={baseStyle}>
       <div style={{ maxWidth: 1024, margin: '0 auto' }}>
+        {/* Toast cupón auto-aplicado */}
+        {toast && (
+          <div style={{
+            position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)',
+            zIndex: 999, padding: '12px 24px', borderRadius: 10,
+            background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-alt))',
+            color: '#fff', fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
+            boxShadow: '0 4px 24px rgba(204,0,212,0.4)',
+            display: 'flex', alignItems: 'center', gap: 10,
+            animation: 'fadeIn 0.3s ease',
+          }}>
+            🎉 ¡Enhorabuena! Desbloqueaste un cupón especial — 100% de descuento aplicado
+          </div>
+        )}
+
         <button
           onClick={() => navigate('/cart')}
           style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.45)', fontFamily: 'var(--font-body)', marginBottom: 20, padding: 0 }}
