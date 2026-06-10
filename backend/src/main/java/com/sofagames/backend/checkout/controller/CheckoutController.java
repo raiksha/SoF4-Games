@@ -2,6 +2,7 @@ package com.sofagames.backend.checkout.controller;
 
 import com.sofagames.backend.auth.entity.User;
 import com.sofagames.backend.auth.repository.UserRepository;
+import com.sofagames.backend.checkout.dto.CheckoutRequestDTO;
 import com.sofagames.backend.checkout.dto.CheckoutResponseDTO;
 import com.sofagames.backend.checkout.service.CheckoutService;
 import com.sofagames.backend.config.JwtUtil;
@@ -22,10 +23,11 @@ public class CheckoutController {
 
     @PostMapping
     public ResponseEntity<CheckoutResponseDTO> checkout(
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody(required = false) CheckoutRequestDTO request) {
 
         UUID userId = extractUserId(authHeader);
-        CheckoutResponseDTO response = checkoutService.checkout(userId);
+        CheckoutResponseDTO response = checkoutService.checkout(userId, request);
         return ResponseEntity.ok(response);
     }
 

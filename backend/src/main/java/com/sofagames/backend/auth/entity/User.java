@@ -31,6 +31,10 @@ public class User implements UserDetails {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
+    @Column(name = "wallet_balance", nullable = false)
+    @Builder.Default
+    private int walletBalance = 0;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;
 
