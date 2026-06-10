@@ -7,6 +7,7 @@ import com.sofagames.backend.game.entity.Game;
 import com.sofagames.backend.game.repository.GameRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -144,5 +145,50 @@ public class GameService {
                 new java.util.Locale("es", "CL")
         );
         return currency + "$ " + nf.format(units);
+    }
+
+    public List<GameSummaryDTO> getFeaturedGames() {
+
+        return gameRepository
+                .findAllByOrderByRecommendationsTotalDesc(
+                        PageRequest.of(0, 4)
+                )
+                .stream()
+                .map(this::toSummaryDTO)
+                .toList();
+    }
+
+    public List<GameSummaryDTO> getSaleGames() {
+
+        return gameRepository
+                .findByDiscountPercentGreaterThanOrderByDiscountPercentDesc(
+                        0,
+                        PageRequest.of(0, 4)
+                )
+                .stream()
+                .map(this::toSummaryDTO)
+                .toList();
+    }
+
+    public List<GameSummaryDTO> getRecentGames() {
+
+        return gameRepository
+                .findAllByOrderByReleaseDateDesc(
+                        PageRequest.of(0, 4)
+                )
+                .stream()
+                .map(this::toSummaryDTO)
+                .toList();
+    }
+
+    public List<GameSummaryDTO> getTopRatedGames() {
+
+        return gameRepository
+                .findAllByOrderByTotalPositiveDesc(
+                        PageRequest.of(0, 4)
+                )
+                .stream()
+                .map(this::toSummaryDTO)
+                .toList();
     }
 }
