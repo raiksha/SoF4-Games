@@ -1,5 +1,6 @@
 import type { Game } from '../types'
 import type { GameDetail } from '../types/game'
+import { getCachedData } from '../utils/cache'
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api/v1'
 
@@ -39,52 +40,82 @@ export const gameService = {
      * Ejemplo: getById(42) → GET /api/v1/games/42
      */
     getById: async (id: number): Promise<GameDetail> => {
-        const response = await fetch(`${BASE_URL}/games/${id}`)
+        return getCachedData(
+            `game-${id}`,
+            async () => {
+                const response = await fetch(`${BASE_URL}/games/${id}`)
 
-        if (!response.ok) {
-            throw new Error(`Error al obtener el juego: ${response.status}`)
-        }
+                if (!response.ok) {
+                    throw new Error(`Error al obtener el juego: ${response.status}`)
+                }
 
-        return response.json() as Promise<GameDetail>
+                return response.json()
+            },
+            1440
+        )
     },
 
     getFeaturedGames: async (): Promise<Game[]> => {
-        const response = await fetch(`${BASE_URL}/games/featured`)
+        return getCachedData(
+            'featured-games',
+            async () => {
+                const response = await fetch(`${BASE_URL}/games/featured`)
 
-        if (!response.ok) {
-            throw new Error(`Error al obtener destacados: ${response.status}`)
-        }
+                if (!response.ok) {
+                    throw new Error(`Error al obtener destacados: ${response.status}`)
+                }
 
-        return response.json()
+                return response.json()
+            },
+            1440
+        )
     },
 
     getSaleGames: async (): Promise<Game[]> => {
-        const response = await fetch(`${BASE_URL}/games/sales`)
+        return getCachedData(
+            'sale-games',
+            async () => {
+                const response = await fetch(`${BASE_URL}/games/sales`)
 
-        if (!response.ok) {
-            throw new Error(`Error al obtener rebajas: ${response.status}`)
-        }
+                if (!response.ok) {
+                    throw new Error(`Error al obtener rebajas: ${response.status}`)
+                }
 
-        return response.json()
+                return response.json()
+            },
+            1440
+        )
     },
 
     getRecentGames: async (): Promise<Game[]> => {
-        const response = await fetch(`${BASE_URL}/games/recent`)
+        return getCachedData(
+            'recent-games',
+            async () => {
+                const response = await fetch(`${BASE_URL}/games/recent`)
 
-        if (!response.ok) {
-            throw new Error(`Error al obtener recientes: ${response.status}`)
-        }
+                if (!response.ok) {
+                    throw new Error(`Error al obtener recientes: ${response.status}`)
+                }
 
-        return response.json()
+                return response.json()
+            },
+            1440
+        )
     },
 
     getTopRatedGames: async (): Promise<Game[]> => {
-        const response = await fetch(`${BASE_URL}/games/top-rated`)
+        return getCachedData(
+            'top-rated-games',
+            async () => {
+                const response = await fetch(`${BASE_URL}/games/top-rated`)
 
-        if (!response.ok) {
-            throw new Error(`Error al obtener mejor valorados: ${response.status}`)
-        }
+                if (!response.ok) {
+                    throw new Error(`Error al obtener mejor valorados: ${response.status}`)
+                }
 
-        return response.json()
+                return response.json()
+            },
+            1440
+        )
     },
 }
