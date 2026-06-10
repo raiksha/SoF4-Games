@@ -102,22 +102,23 @@ export default function CartPage() {
       <div style={{ maxWidth: 1024, margin: '0 auto' }}>
 
         {/* Stepper */}
-        <div style={{ display: 'flex', marginBottom: 28 }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 28 }}>
           {STEPS.map((step, i) => (
-            <div key={step} style={{
-              flex: 1, textAlign: 'center', padding: '10px 0', fontSize: 13,
-              fontWeight: i === 0 ? 700 : 500, fontFamily: 'var(--font-body)',
-              border: '1px solid',
-              borderLeft: i > 0 ? 'none' : undefined,
-              borderRadius: i === 0 ? '6px 0 0 6px' : i === 2 ? '0 6px 6px 0' : '0',
-              borderColor: i === 0 ? 'var(--color-accent)' : 'rgba(255,255,255,0.1)',
-              color: i === 0 ? '#fff' : 'rgba(255,255,255,0.28)',
-              background: i === 0 ? 'rgba(255,0,208,0.08)' : 'transparent',
-              boxShadow: i === 0 ? 'inset 0 0 18px rgba(255,0,208,0.08)' : 'none',
-              textShadow: i === 0 ? '0 0 10px var(--color-accent)' : 'none',
-            }}>
-              {step}
-            </div>
+            <>
+              <div key={step} style={{
+                padding: '7px 20px', fontSize: 12, whiteSpace: 'nowrap',
+                fontWeight: i === 0 ? 700 : 500, fontFamily: 'var(--font-body)',
+                borderRadius: 8, border: '2px solid',
+                borderColor: i === 0 ? '#cc00d4' : 'rgba(255,255,255,0.08)',
+                color: i === 0 ? '#fff' : 'rgba(255,255,255,0.28)',
+                background: i === 0 ? 'rgba(204,0,212,0.15)' : 'transparent',
+              }}>
+                {step}
+              </div>
+              {i < STEPS.length - 1 && (
+                <div key={`line-${i}`} style={{ flex: 1, height: 2, background: 'rgba(255,255,255,0.1)' }} />
+              )}
+            </>
           ))}
         </div>
 

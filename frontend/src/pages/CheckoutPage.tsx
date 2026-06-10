@@ -11,26 +11,27 @@ const STEPS = ['1 Carrito', '2 Pago', '3 Confirmación']
 /* ── Stepper ──────────────────────────────────────────────────────── */
 function Stepper({ active }: { active: 0 | 1 | 2 }) {
   return (
-    <div style={{ display: 'flex', marginBottom: 32 }}>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32 }}>
       {STEPS.map((step, i) => {
         const done    = i < active
         const current = i === active
         return (
-          <div key={step} style={{
-            flex: 1, textAlign: 'center', padding: '10px 0', fontSize: 13,
-            fontWeight: current ? 700 : 500, fontFamily: 'var(--font-body)',
-            border: '1px solid',
-            borderLeft: i > 0 ? 'none' : undefined,
-            borderRadius: i === 0 ? '6px 0 0 6px' : i === 2 ? '0 6px 6px 0' : '0',
-            borderColor: current ? 'var(--color-accent)' : done ? 'rgba(255,0,208,0.3)' : 'rgba(255,255,255,0.1)',
-            color: current ? '#fff' : done ? 'rgba(255,0,208,0.7)' : 'rgba(255,255,255,0.25)',
-            background: current ? 'rgba(255,0,208,0.08)' : 'transparent',
-            boxShadow: current ? 'inset 0 0 20px rgba(255,0,208,0.07)' : 'none',
-            textShadow: current ? '0 0 10px rgba(255,0,208,0.6)' : 'none',
-            transition: 'all 0.3s ease',
-          }}>
-            {done ? `${step} ✓` : step}
-          </div>
+          <>
+            <div key={step} style={{
+              padding: '7px 20px', fontSize: 12, whiteSpace: 'nowrap',
+              fontWeight: current ? 700 : 500, fontFamily: 'var(--font-body)',
+              borderRadius: 8, border: '2px solid',
+              borderColor: current ? '#cc00d4' : done ? 'rgba(204,0,212,0.35)' : 'rgba(255,255,255,0.08)',
+              color: current ? '#fff' : done ? 'rgba(204,0,212,0.8)' : 'rgba(255,255,255,0.28)',
+              background: current ? 'rgba(204,0,212,0.15)' : done ? 'rgba(204,0,212,0.06)' : 'transparent',
+              transition: 'all 0.3s ease',
+            }}>
+              {done ? `${step} ✓` : step}
+            </div>
+            {i < STEPS.length - 1 && (
+              <div key={`line-${i}`} style={{ flex: 1, height: 2, background: done ? 'rgba(204,0,212,0.4)' : 'rgba(255,255,255,0.1)', transition: 'background 0.3s ease' }} />
+            )}
+          </>
         )
       })}
     </div>
@@ -247,6 +248,15 @@ export default function CheckoutPage() {
   return (
     <main style={baseStyle}>
       <div style={{ maxWidth: 1024, margin: '0 auto' }}>
+        <button
+          onClick={() => navigate('/cart')}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.45)', fontFamily: 'var(--font-body)', marginBottom: 20, padding: 0 }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+        >
+          ← Volver al carrito
+        </button>
+
         <Stepper active={1} />
 
         {error && (
