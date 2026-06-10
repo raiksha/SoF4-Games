@@ -64,6 +64,13 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
         setUserMenuOpen(false)
     }
 
+    const performSearch = (query: string) => {
+        const trimmed = query.trim()
+        if (!trimmed) return
+
+        navigate(`/search?q=${encodeURIComponent(trimmed)}`)
+    }
+
     return (
         <>
             <nav
@@ -113,6 +120,7 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
                                     type="text"
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
+                                    onKeyDown={e => { if (e.key === 'Enter') { performSearch(searchQuery) }}}
                                     placeholder="Buscar juegos, tags…"
                                     className="w-full h-8 px-3 text-sm bg-transparent outline-none"
                                     style={{
@@ -282,6 +290,7 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
                             el.style.background = '#cc00a6'
                             setTimeout(() => { el.style.background = 'var(--color-accent)' }, 150)
                         }}
+                        onClick={() => performSearch(mobileSearch)}
                     >
                         Buscar
                     </button>
