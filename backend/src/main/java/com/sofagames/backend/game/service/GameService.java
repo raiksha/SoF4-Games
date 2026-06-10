@@ -1,5 +1,6 @@
 package com.sofagames.backend.game.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import com.sofagames.backend.game.dto.GameDetailDTO;
 import com.sofagames.backend.game.dto.GameSummaryDTO;
@@ -38,6 +39,7 @@ public class GameService {
      * @return    GameDetailDTO con todos los datos del juego
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = "game-detail", key = "#id")
     public GameDetailDTO getGameById(Long id) {
 
         Game game = gameRepository.findById(id)
@@ -147,6 +149,7 @@ public class GameService {
         return currency + "$ " + nf.format(units);
     }
 
+    @Cacheable("featured-games")
     public List<GameSummaryDTO> getFeaturedGames() {
 
         return gameRepository
@@ -159,6 +162,7 @@ public class GameService {
                 .toList();
     }
 
+    @Cacheable("sale-games")
     public List<GameSummaryDTO> getSaleGames() {
 
         return gameRepository
@@ -171,6 +175,7 @@ public class GameService {
                 .toList();
     }
 
+    @Cacheable("recent-games")
     public List<GameSummaryDTO> getRecentGames() {
 
         return gameRepository
@@ -183,6 +188,7 @@ public class GameService {
                 .toList();
     }
 
+    @Cacheable("top-rated-games")
     public List<GameSummaryDTO> getTopRatedGames() {
 
         return gameRepository
