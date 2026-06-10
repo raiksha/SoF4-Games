@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Game } from '../../types'
 import DiscountBadge from './DiscountBadge'
+import { useCart } from '../../context/CartContext'
 
 interface GameCardProps {
     game: Game
@@ -18,7 +19,9 @@ export default function GameCard({
                                      showCartButton = true,
                                  }: GameCardProps) {
     const navigate = useNavigate()
-    const [hovered, setHovered] = useState(false)
+    const { addToCart } = useCart()
+    const [hovered, setHovered]   = useState(false)
+    const [btnStatus, setBtnStatus] = useState<'idle' | 'loading' | 'added' | 'error'>('idle')
     const discount              = game.discount_percent ?? game.price_overview?.discount_percent ?? 0
     const priceInitialFormatted = game.price_overview?.initial_formatted ?? `CLP$ ${Math.floor((game.price_initial ?? 0) / 100).toLocaleString('es-CL')}`
     const priceFinalFormatted   = game.price_overview?.final_formatted   ?? `CLP$ ${Math.floor((game.price_final   ?? 0) / 100).toLocaleString('es-CL')}`
@@ -120,20 +123,40 @@ export default function GameCard({
                 {showCartButton && (
                     <div style={{ marginTop: 'auto' }}>
                         <button
+                            disabled={btnStatus === 'loading' || btnStatus === 'added'}
                             className="w-full mt-2 py-2 rounded-md text-xs font-semibold transition-all duration-200"
                             style={{
                                 fontFamily: 'var(--font-cta)',
-                                background: hovered
+                                background: btnStatus === 'added'
+                                    ? 'linear-gradient(135deg, #00c26e, #00a85a)'
+                                    : hovered
                                     ? 'linear-gradient(135deg, var(--color-accent), var(--color-accent-alt))'
                                     : 'rgba(255,255,255,0.04)',
-                                color:      hovered ? '#fff' : 'var(--color-text-muted)',
-                                border:     hovered ? 'none' : `1px solid var(--color-border)`,
-                                boxShadow:  hovered ? 'var(--glow-accent)' : 'none',
-                                padding:    '8px 0',
+                                color:   '#fff',
+                                border:  hovered || btnStatus === 'added' ? 'none' : `1px solid var(--color-border)`,
+                                boxShadow: hovered ? 'var(--glow-accent)' : 'none',
+                                padding: '8px 0',
+                                opacity: btnStatus === 'loading' ? 0.7 : 1,
+                                cursor:  btnStatus === 'loading' || btnStatus === 'added' ? 'not-allowed' : 'pointer',
                             }}
-                            onClick={e => { e.stopPropagation() /* TODO: addToCart */ }}
+                            onClick={async e => {
+                                e.stopPropagation()
+                                const token = localStorage.getItem('token')
+                                if (!token) { navigate('/login'); return }
+                                setBtnStatus('loading')
+                                try {
+                                    await addToCart(game.id)
+                                    setBtnStatus('added')
+                                } catch {
+                                    setBtnStatus('error')
+                                    setTimeout(() => setBtnStatus('idle'), 2000)
+                                }
+                            }}
                         >
-                            Añadir al carrito
+                            {btnStatus === 'loading' ? 'Agregando...'
+                             : btnStatus === 'added'   ? '✓ Agregado'
+                             : btnStatus === 'error'   ? 'Error, reintentar'
+                             : 'Añadir al carrito'}
                         </button>
                     </div>
                 )}
