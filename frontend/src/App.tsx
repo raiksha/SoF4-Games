@@ -3,6 +3,7 @@ import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import StorePage from './pages/StorePage'
 import GamePage from './pages/GamePage'
+import GamesPage from './pages/GamesPage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import LibraryPage from "./pages/LibraryPage"
@@ -23,7 +24,8 @@ function AppContent() {
       <Routes>
         {/* Rutas públicas */}
         <Route path="/"             element={<StorePage />} />
-        <Route path="/game/:id"     element={<GamePage />} />
+        <Route path="/games"        element={<GamesPage />} />  {/* Games page with filters and pagination */}
+        <Route path="/game/:id"     element={<GamePage />} />   {/* Individual game page */}
         <Route path="/search"       element={<SearchResultsPage />} />
         <Route path="/store/sales"  element={<SalesPage />} />
         <Route path="/store/new"    element={<RecentPage />} />
