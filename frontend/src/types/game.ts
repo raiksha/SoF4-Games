@@ -66,6 +66,9 @@ export interface Game {
   background_raw:       string
   screenshots:          Screenshot[]
   is_free:              boolean
+  discount_percent:     number
+  price_initial:        number
+  price_final:          number
   price_overview:       PriceOverview | null
   platforms:            Platforms
   release_date:         ReleaseDate
@@ -135,7 +138,7 @@ export interface GameDetail {
   id:                   number
   steamAppId:           number
   name:                 string
-  shortDescription:     string
+  detailedDescription:    string
   headerImage:          string
   backgroundRaw:        string
   isFree:               boolean
@@ -149,9 +152,11 @@ export interface GameDetail {
   supportedLanguages:   string | null
   recommendationsTotal: number
   achievementsTotal:    number
+  systemRequirements:   Record<string, SystemRequirements>
   genres:               GameGenre[]
   categories:           GameCategory[]
   developers:           string[]
   publishers:           string[]
   screenshots:          GameScreenshot[]
-}
+  }
+

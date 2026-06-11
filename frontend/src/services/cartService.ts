@@ -26,6 +26,17 @@ export const getCartItems = async (): Promise<CartItem[]> => {
     return response.json()
 }
 
+export const addToCart = async (gameId: number): Promise<CartItem> => {
+    const response = await fetch(`${BASE_URL}/cart/${gameId}`, {
+        method: 'POST',
+        headers: getAuthHeader(),
+    })
+
+    if (!response.ok) throw new Error('Error al agregar al carrito')
+
+    return response.json()
+}
+
 export const removeFromCart = async (gameId: number): Promise<void> => {
     const response = await fetch(`${BASE_URL}/cart/${gameId}`, {
         method: 'DELETE',
@@ -47,13 +58,22 @@ export interface CheckoutResponse {
     purchasedAt: string
 }
 
-export const checkout = async (): Promise<CheckoutResponse> => {
+export interface CheckoutRequest {
+    coupon?: string
+    paymentMethod: string
+}
+
+export const checkout = async (request: CheckoutRequest): Promise<CheckoutResponse> => {
     const response = await fetch(`${BASE_URL}/checkout`, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
     })
 
-    if (!response.ok) throw new Error('Error al procesar el pago')
+    if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.message ?? 'Error al procesar el pago')
+    }
 
     return response.json()
 }
