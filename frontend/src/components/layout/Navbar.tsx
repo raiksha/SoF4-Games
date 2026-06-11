@@ -216,6 +216,7 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
                                             style={{
                                                 color: 'var(--color-text)',
                                                 borderBottom: '1px solid var(--color-border)',
+                                                padding: '0.5rem 1rem',
                                             }}
                                         >
                                             {game.name}
