@@ -8,13 +8,20 @@ export default function GamesPage() {
     const [games, setGames]     = useState<Game[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError]     = useState<string | null>(null)
+    const [search, setSearch]   = useState('')
+    const [sort, setSort]       = useState('name,asc')
+    const [page, setPage]       = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
 
     useEffect(() => {
 
+        setLoading(true)
+
         gameService
-            .getAll(0, 20)
+            .getPage(page, 20, sort)
             .then(data => {
-                setGames(data)
+                setGames(data.content)
+                setTotalPages(data.page.totalPages)
                 setError(null)
             })
             .catch(err => {
@@ -24,7 +31,7 @@ export default function GamesPage() {
                 setLoading(false)
             })
 
-    }, [])
+    }, [sort, page])
 
     if (loading) {
         return (
@@ -57,7 +64,9 @@ export default function GamesPage() {
             </main>
         )
     }
-
+    
+    const filteredGames = games.filter(game => game.name.toLowerCase().includes(search.toLowerCase()))
+    console.log(totalPages)
     return (
         <main
             className="min-h-screen"
@@ -84,17 +93,92 @@ export default function GamesPage() {
                 </h1>
 
                 <div
+                    className="flex flex-col md:flex-row gap-4 mb-8"
+                    style={{
+                        margin: '1rem 0',
+                    }}
+                >
+                    <input
+                        type="text"
+                        placeholder="Buscar juego..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        className="px-3 py-2 rounded"
+                        style={{
+                            background: 'var(--color-bg-card)',
+                            border: '1px solid var(--color-border)',
+                            color: 'var(--color-text)',
+                            padding: '0.5rem 0.7rem',
+                        }}
+                    />
+
+                    <select
+                        value={sort}
+                        onChange={e => {
+                            setPage(0)
+                            setSort(e.target.value)
+                        }}
+                        className="px-3 py-2 rounded"
+                        style={{
+                            background: 'var(--color-bg-card)',
+                            border: '1px solid var(--color-border)',
+                            color: 'var(--color-text)',
+                            padding: '0.5rem 0.7rem',
+                        }}
+                    >
+                        <option value="name,asc">
+                            Nombre
+                        </option>
+
+                        <option value="releaseDate,desc">
+                            Más recientes
+                        </option>
+
+                        <option value="recommendationsTotal,desc">
+                            Mejor valorados
+                        </option>
+
+                        <option value="discountPercent,desc">
+                            Más descuento
+                        </option>
+                    </select>
+                </div>
+
+                <div
                     className="grid gap-6"
                     style={{
                         gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
                     }}
                 >
-                    {games.map(game => (
+                    {filteredGames.map(game => (
                         <GameCard
                             key={game.id}
                             game={game}
                         />
                     ))}
+                </div>
+
+                <div
+                    className="flex justify-center gap-4 mt-8"
+                    style={{ padding: '1rem', }}
+                >
+                    <button
+                        disabled={page === 0}
+                        onClick={() => setPage(p => p - 1)}
+                    >
+                        Anterior
+                    </button>
+
+                    <span>
+                        Página {page + 1} de {totalPages}
+                    </span>
+
+                    <button
+                        disabled={page >= totalPages - 1}
+                        onClick={() => setPage(p => p + 1)}
+                    >
+                        Siguiente
+                    </button>
                 </div>
             </div>
         </main>
