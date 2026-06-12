@@ -59,8 +59,8 @@ export default function Footer() {
               { label: 'Ofertas',             to: '/games' },
               { label: 'Categorías',          to: '/games' },
               { label: 'Nuevos lanzamientos', to: '/games' },
-            ].map(({ label, to }) => (
-              <li key={to}><FooterLink to={to} label={label} /></li>
+            ].map(({ label, to }, index) => (
+              <li key={`${to}-${index}`}><FooterLink to={to} label={label} /></li>
             ))}
           </ul>
         </div>
