@@ -127,7 +127,6 @@ export default function GamePage() {
         system_requirements: game.systemRequirements ?? null,
     }
 
-    console.log(gameForComponents)
     return (
         <main
             className="min-h-screen overflow-x-hidden"

@@ -4,11 +4,6 @@ export default function TabResenas({ game }: { game: Game }) {
   const total = game.total_positive  + game.total_negative
   const pct   = total > 0 ? Math.round((game.total_positive  / total) * 100) : 0
 
-  console.log(game.total_positive)
-  console.log(game.total_negative)
-  console.log(game.recommendations.total)
-  console.log(game.review_score_desc)
-
   return (
     <div className="pb-5" style={{ marginTop: '1.5rem' }}>
       {/* Resumen */}
