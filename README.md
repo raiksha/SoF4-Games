@@ -2,13 +2,23 @@
 
 > *"System.out.Five() for Games"* — una tienda de videojuegos inspirada en Steam, creada como proyecto integrador para la Cohorte 24 del Java Full Stack Bootcamp de Generation Chile.
 
+[Visita Sof4 Games](https://www.sof4games.cl/)
+
 <div align="center">
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat" alt="License: MIT" />
+  <img src="https://img.shields.io/badge/Deploy-Vercel + Render-black?style=flat" alt="Deploy Vercel"/>
   <img src="https://img.shields.io/badge/Java-21-ED8B00?style=flat&logo=openjdk&logoColor=white" alt="Java 21" />
   <img src="https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?style=flat&logo=springboot&logoColor=white" alt="Spring Boot 3.2" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript 5" />
   <img src="https://img.shields.io/badge/PostgreSQL-Neon.tech-336791?style=flat&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat" alt="License: MIT" />
+</div>
+
+---
+
+<div align="center">
+    <img src="https://github.com/alexandercanario225/SoF4-Games-screenshots/blob/main/screenshots/gamecards.png?raw=true"/>
+    <img src="https://github.com/alexandercanario225/SoF4-Games-screenshots/blob/main/screenshots/hero.png?raw=true"/>
 </div>
 
 ---
@@ -35,16 +45,16 @@ Construido con React + TypeScript en el frontend y Spring Boot + PostgreSQL en e
 
 ## Stack tecnológico
 
-| Capa | Tecnología |
-|------|-----------|
+| Capa | Tecnología                     |
+|------|--------------------------------|
 | Frontend | React 19 + TypeScript 5 (Vite) |
-| Backend | Java 21 + Spring Boot 3.2 |
-| Base de datos | PostgreSQL en Neon.tech |
-| Autenticación | Spring Security + JWT (jjwt) |
-| Deploy frontend | Vercel |
-| Deploy backend | Railway |
-| Diseño | Figma |
-| Gestión de tareas | Jira |
+| Backend | Java 21 + Spring Boot 3.2      |
+| Base de datos | PostgreSQL en Neon.tech        |
+| Autenticación | Spring Security + JWT (jjwt)   |
+| Deploy frontend | Vercel                         |
+| Deploy backend | Render                         |
+| Diseño | Figma                          |
+| Gestión de tareas | Jira                           |
 
 ---
 
@@ -114,8 +124,8 @@ El archivo `.env.example` ya tiene los valores correctos para desarrollo local, 
 Instala las dependencias y levanta el servidor de desarrollo:
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 La aplicación queda disponible en `http://localhost:5173`.
@@ -124,7 +134,7 @@ La aplicación queda disponible en `http://localhost:5173`.
 
 ## Variables de entorno
 
-### Frontend (`frontend/.env.local`)
+### Frontend (`frontend/.env.local` o `frontend/.env`)
 
 | Variable | Descripción | Valor por defecto |
 |----------|-------------|-------------------|
@@ -132,41 +142,55 @@ La aplicación queda disponible en `http://localhost:5173`.
 
 ### Backend (`backend/src/main/resources/application-local.yaml`)
 
-| Variable | Descripción |
-|----------|-------------|
-| `DATABASE_URL` | Connection string de Neon.tech |
-| `DB_USER` | Usuario de la base de datos |
-| `DB_PASSWORD` | Contraseña de la base de datos |
-| `JWT_SECRET` | Clave secreta para firmar tokens JWT (mínimo 32 caracteres) |
+| Variable              | Descripción                                                 |
+|-----------------------|-------------------------------------------------------------|
+| `CORS_ALLOWED_ORIGIN` | Authorized websites                                         |
+| `DATABASE_URL`        | Connection string de Neon.tech                              |
+| `DB_USER`             | Usuario de la base de datos                                 |
+| `DB_PASSWORD`         | Contraseña de la base de datos                              |
+| `JWT_SECRET`          | Clave secreta para firmar tokens JWT (mínimo 32 caracteres) |
 
 ---
 
 ## Estructura del proyecto
 
-```
+```text
 SoF4-Games/
-├── frontend/                  # React + TypeScript (Vite)
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── components/        # Componentes reutilizables
-│   │   ├── context/           # Estado global (AuthContext, CartContext)
-│   │   ├── hooks/             # Custom hooks
-│   │   ├── pages/             # Una por cada ruta
-│   │   ├── services/          # Llamadas HTTP (Axios)
-│   │   ├── types/             # Interfaces TypeScript
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── .env.example
-│   └── vite.config.ts
+├── frontend/                        # React + TypeScript (Vite)
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       │   ├── auth/                # Componentes de autenticación
+│       │   ├── game/                # Componentes de GamePage
+│       │   │   └── tabs/
+│       │   ├── layout/              # Navbar, Footer, layouts
+│       │   └── store/               # Componentes de la tienda
+│       ├── constants/               # Constantes globales
+│       ├── context/                 # Context API (Auth, Cart, etc.)
+│       ├── pages/                   # Páginas/rutas principales
+│       ├── services/                # Clientes HTTP y acceso a API
+│       ├── types/                   # Interfaces y tipos TypeScript
+│       └── utils/                   # Utilidades compartidas
 │
-└── backend/                   # Spring Boot (Java 21)
-    └── src/main/java/com/sofagames/backend/
-        ├── controller/        # Endpoints REST
-        ├── dto/               # Objetos de transferencia de datos
-        ├── model/             # Entidades JPA
-        ├── repository/        # Interfaces JPA
-        ├── security/          # Spring Security + JWT
-        └── service/           # Lógica de negocio
+└── backend/                         # Spring Boot (Java 21)
+    ├── .mvn/
+    └── src/
+        ├── main/
+        │   ├── java/com/sofagames/backend/
+        │   │   ├── auth/            # Autenticación y JWT
+        │   │   ├── cart/            # Carrito de compras
+        │   │   ├── checkout/        # Flujo de compra
+        │   │   ├── config/          # Configuración Spring
+        │   │   ├── coupon/          # Cupones y descuentos
+        │   │   ├── friendship/      # Sistema de amigos
+        │   │   ├── game/            # Catálogo de juegos
+        │   │   ├── library/         # Biblioteca del usuario
+        │   │   ├── shared/          # Excepciones y recursos compartidos
+        │   │   └── wallet/          # Wallet y saldo virtual
+        │   └── resources/
+        │       └── db/              # Scripts y datos de base de datos
+        └── test/
+            └── java/com/sofagames/backend/
 ```
 
 ---
@@ -176,10 +200,10 @@ SoF4-Games/
 ### Frontend
 
 ```bash
-npm run dev       # Servidor de desarrollo (localhost:5173)
-npm run build     # Build de producción → /dist
-npm run preview   # Preview del build localmente
-npm run lint      # Revisar errores de ESLint
+pnpm dev       # Servidor de desarrollo (localhost:5173)
+pnpm build     # Build de producción → /dist
+pnpm preview   # Preview del build localmente
+pnpm lint      # Revisar errores de ESLint
 ```
 
 ### Backend

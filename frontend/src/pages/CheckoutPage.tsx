@@ -71,7 +71,7 @@ function FormInput({ label, value, onChange, placeholder, maxLength, type = 'tex
 
 /* ── Componente principal ─────────────────────────────────────────── */
 export default function CheckoutPage() {
-  const navigate = useNavigate()
+  const navigate                        = useNavigate()
   const [items, setItems]               = useState<CartItem[]>([])
   const [loading, setLoading]           = useState(true)
   const [paying, setPaying]             = useState(false)
@@ -81,6 +81,16 @@ export default function CheckoutPage() {
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
   const [toast, setToast]               = useState(false)
   const { refreshCart }                 = useCart()
+
+  useEffect(() => {
+    if (
+        sessionStorage.getItem('checkout_completed') === 'true' &&
+        items.length === 0 &&
+        !loading
+    ) {
+        navigate('/library', { replace: true })
+    }
+  }, [items, loading, navigate])
 
   // Cupón siempre activo — viene del paso 1 o se auto-aplica aquí
   const COUPON_CODE = 'javalimos24'
@@ -143,6 +153,7 @@ export default function CheckoutPage() {
 
       sessionStorage.removeItem('checkout_coupon')
       setConfirmation(result)
+      sessionStorage.setItem('checkout_completed', 'true')
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo procesar el pago')

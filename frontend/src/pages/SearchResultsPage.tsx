@@ -41,13 +41,22 @@ export default function SearchResultsPage() {
     if (loading) {
         return (
             <main
-                className="min-h-screen"
-                style={{
-                    background: 'var(--color-bg)',
-                    paddingTop: 'var(--nav-height)',
-                }}
+                className="min-h-screen flex items-center justify-center"
+                style={{ background: 'var(--color-bg)', paddingTop: 'var(--nav-height)' }}
             >
-                <div className="p-10">
+                {/* Spinner simple con CSS — sin dependencias externas */}
+                <div style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                    <div
+                        style={{
+                            width:  '40px',
+                            height: '40px',
+                            border: '3px solid var(--color-border)',
+                            borderTopColor: 'var(--color-accent)',
+                            borderRadius: '50%',
+                            animation: 'spin 0.8s linear infinite',
+                            margin: '0 auto 1rem',
+                        }}
+                    />
                     Cargando resultados...
                 </div>
             </main>
