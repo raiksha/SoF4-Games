@@ -1,5 +1,10 @@
 import type { Game } from '../../../types'
 
+type Requirements = {
+    minimum?: string
+    recommended?: string
+}
+
 function ReqBlock({ title, text }: { title: string; text: string }) {
   return (
     <div className="flex-1">
@@ -24,7 +29,6 @@ function ReqBlock({ title, text }: { title: string; text: string }) {
               color: 'var(--color-text-muted)',
               fontFamily: 'var(--font-body)',
               fontSize: '0.9rem',
-              paddingTop: '0.4rem',
               paddingBottom: '0.5rem',
             }}
           >
@@ -37,7 +41,13 @@ function ReqBlock({ title, text }: { title: string; text: string }) {
 }
 
 export default function TabRequisitos({ game }: { game: Game }) {
-    const plats = Object.entries(game.system_requirements)
+  const requirements: Record<string, Requirements> =
+      typeof game.system_requirements === 'string'
+          ? JSON.parse(game.system_requirements)
+          : (game.system_requirements ?? {})
+
+  const plats = Object.entries(requirements)
+  
   if (!plats.length) {
       return <p className="py-5" style={{ color: 'var(--color-text-muted)', fontSize: '1rem', marginTop: '1rem', }}>No hay requisitos disponibles.</p>
   }
@@ -46,7 +56,15 @@ export default function TabRequisitos({ game }: { game: Game }) {
     <div className="pb-5" style={{ paddingTop: '1.5rem' }}>
       {plats.map(([plat, reqs]) => (
         <div key={plat} className="mb-6">
-          <p className="uppercase tracking-widest mb-3" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-title)', fontSize: '0.75rem' }}>
+          <p 
+            className="uppercase tracking-widest mb-3" 
+            style={{ 
+              color: 'var(--color-accent)', 
+              fontFamily: 'var(--font-title)', 
+              fontSize: '1rem',
+              margin: '1.3rem 0 0.3rem 0', 
+            }}
+          >
             {plat === 'pc' ? 'Windows' : plat === 'mac' ? 'macOS' : plat === 'linux' ? 'Linux' : plat}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
