@@ -394,7 +394,7 @@ export default function ProfilePage() {
                             }}>
                                 <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem', color: '#fff' }}>General</p>
                                 <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: configSection === 'general' ? 'rgba(255,255,255,0.75)' : P.textSecond }}>
-                                    Nombre de usuario, descripción
+                                    Descripción y vista previa
                                 </p>
                             </button>
                             {/* Sección Detalles de cuenta */}                            <button onClick={() => setConfigSection('cuenta')} style={{
