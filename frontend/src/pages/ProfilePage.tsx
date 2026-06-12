@@ -164,7 +164,6 @@ export default function ProfilePage() {
             return
         }
         try {
-            console.log('Subiendo recursos:', { gameName, gameDesc, gameImage, gameFile })
             await new Promise(resolve => setTimeout(resolve, 1500))
             setGameName('')
             setGameDesc('')
@@ -174,7 +173,7 @@ export default function ProfilePage() {
             fileInputs.forEach(input => input.value = '')
             setDevSuccess(true)
             setTimeout(() => setDevSuccess(false), 3000)
-        } catch (err) {
+        } catch {
             setDevError('Ocurrió un error al subir el juego.')
         }
     }
