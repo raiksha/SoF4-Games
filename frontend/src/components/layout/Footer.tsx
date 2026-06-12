@@ -56,9 +56,9 @@ export default function Footer() {
           <ul className="flex flex-col gap-2">
             {[
               { label: 'Inicio',              to: '/' },
-              { label: 'Ofertas',             to: '/store/sales' },
-              { label: 'Categorías',          to: '/store/categories' },
-              { label: 'Nuevos lanzamientos', to: '/store/new' },
+              { label: 'Ofertas',             to: '/games' },
+              { label: 'Categorías',          to: '/games' },
+              { label: 'Nuevos lanzamientos', to: '/games' },
             ].map(({ label, to }) => (
               <li key={to}><FooterLink to={to} label={label} /></li>
             ))}
@@ -77,7 +77,7 @@ export default function Footer() {
             {[
               { label: 'Mi perfil',     to: '/profile' },
               { label: 'Biblioteca',    to: '/library' },
-              { label: 'Configuración', to: '/settings' },
+              // { label: 'Configuración', to: '/settings' },
               { label: 'Carrito',       to: '/cart' },
             ].map(({ label, to }) => (
               <li key={to}><FooterLink to={to} label={label} /></li>
