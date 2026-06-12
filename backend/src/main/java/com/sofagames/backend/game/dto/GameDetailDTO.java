@@ -31,6 +31,9 @@ public record GameDetailDTO(
         String    controllerSupport,
         String    supportedLanguages,
         Integer   recommendationsTotal,
+        Integer   totalPositive,
+        Integer   totalNegative,
+        String    reviewScoreDesc,
         Integer   achievementsTotal,
         String    systemRequirements,
 
