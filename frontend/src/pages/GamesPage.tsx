@@ -66,7 +66,7 @@ export default function GamesPage() {
     }
     
     const filteredGames = games.filter(game => game.name.toLowerCase().includes(search.toLowerCase()))
-    console.log(totalPages)
+
     return (
         <main
             className="min-h-screen"
@@ -91,6 +91,16 @@ export default function GamesPage() {
                 >
                     Todos los juegos
                 </h1>
+
+                <p
+                    className="text-sm"
+                    style={{
+                        color: 'var(--color-text-muted)',
+                        marginBottom: '1rem',
+                    }}
+                >
+                    {games.length} juegos en esta página
+                </p>
 
                 <div
                     className="flex flex-col md:flex-row gap-4 mb-8"
@@ -144,19 +154,27 @@ export default function GamesPage() {
                     </select>
                 </div>
 
-                <div
-                    className="grid gap-6"
-                    style={{
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                    }}
-                >
-                    {filteredGames.map(game => (
-                        <GameCard
-                            key={game.id}
-                            game={game}
-                        />
-                    ))}
-                </div>
+                {filteredGames.length === 0 ? (
+                    <div
+                        style={{
+                            textAlign: 'center',
+                            padding: '4rem 0',
+                            color: 'var(--color-text-muted)',
+                        }}
+                    >
+                        No se encontraron juegos.
+                    </div>
+                ) : (
+                    <div
+                        className="grid gap-6"
+                        style={{
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', }}
+                    >
+                        {filteredGames.map(game => (
+                            <GameCard key={game.id} game={game} />
+                        ))}
+                    </div>
+                )}
 
                 <div
                     className="flex justify-center gap-4 mt-8"

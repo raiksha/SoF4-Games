@@ -151,6 +151,9 @@ export interface GameDetail {
   controllerSupport:    string | null
   supportedLanguages:   string | null
   recommendationsTotal: number
+  totalPositive:        number
+  totalNegative:        number
+  reviewScoreDesc:      string
   achievementsTotal:    number
   systemRequirements:   Record<string, SystemRequirements>
   genres:               GameGenre[]

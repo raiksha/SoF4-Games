@@ -56,12 +56,26 @@ function reducer(state: SidebarState, action: Partial<SidebarState>): SidebarSta
 export default function FriendsSidebar({ isOpen, onClose }: Props) {
     const [state, dispatch] = useReducer(reducer, initialState)
     const searchTimeoutRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const isAuthenticated = !!localStorage.getItem('token')
 
     // Al abrir: cargar amigos, solicitudes recibidas y solicitudes enviadas
     useEffect(() => {
         if (!isOpen) return
 
         dispatch({ tab: 'friends', searchQuery: '', searchResults: [], newSentRequests: {} })
+
+         if (!isAuthenticated) {
+            dispatch({
+                friends: [],
+                pendingRequests: [],
+                sentRequests: [],
+                loadingFriends: false,
+                loadingRequests: false,
+                errorFriends: null,
+                errorRequests: null,
+            })
+            return
+        }
 
         dispatch({ loadingFriends: true, errorFriends: null })
         getFriends()
@@ -76,7 +90,7 @@ export default function FriendsSidebar({ isOpen, onClose }: Props) {
         getSentRequests()
             .then(data => dispatch({ sentRequests: data }))
             .catch(()  => dispatch({ sentRequests: [] }))
-    }, [isOpen])
+    }, [isOpen, isAuthenticated])
 
     // Búsqueda con debounce
     useEffect(() => {
@@ -212,87 +226,99 @@ export default function FriendsSidebar({ isOpen, onClose }: Props) {
 
                     {/* Pestaña: Amigos */}
                     {state.tab === 'friends' && (
-                        <>
-                            {state.loadingFriends && <MsgCenter text="Cargando amigos…" />}
-                            {state.errorFriends && !state.loadingFriends && <MsgCenter text={state.errorFriends} error />}
-                            {!state.loadingFriends && !state.errorFriends && state.friends.length === 0 && (
-                                <MsgCenter text="Aún no tienes amigos agregados." />
-                            )}
-                            {!state.loadingFriends && !state.errorFriends && state.friends.map(friend => (
-                                <FriendRow
-                                    key={friend.userId}
-                                    friend={friend}
-                                    onRemove={() => handleRemoveFriend(friend.friendshipId)}
-                                />
-                            ))}
-                        </>
+                        !isAuthenticated ? (
+                            <LoginRequired />
+                        ) : (
+                            <>
+                                {state.loadingFriends && <MsgCenter text="Cargando amigos…" />}
+                                {state.errorFriends && !state.loadingFriends && <MsgCenter text={state.errorFriends} error />}
+                                {!state.loadingFriends && !state.errorFriends && state.friends.length === 0 && (
+                                    <MsgCenter text="Aún no tienes amigos agregados." />
+                                )}
+                                {!state.loadingFriends && !state.errorFriends && state.friends.map(friend => (
+                                    <FriendRow
+                                        key={friend.userId}
+                                        friend={friend}
+                                        onRemove={() => handleRemoveFriend(friend.friendshipId)}
+                                    />
+                                ))}
+                            </>
+                        )
                     )}
 
                     {/* Pestaña: Solicitudes */}
                     {state.tab === 'requests' && (
-                        <>
-                            {state.loadingRequests && <MsgCenter text="Cargando solicitudes…" />}
-                            {state.errorRequests && !state.loadingRequests && <MsgCenter text={state.errorRequests} error />}
-                            {!state.loadingRequests && !state.errorRequests && state.pendingRequests.length === 0 && (
-                                <MsgCenter text="No tienes solicitudes pendientes." />
-                            )}
-                            {!state.loadingRequests && !state.errorRequests && state.pendingRequests.map(req => (
-                                <PendingRow
-                                    key={req.friendshipId}
-                                    request={req}
-                                    onAccept={() => handleAccept(req.friendshipId)}
-                                    onIgnore={() => handleIgnore(req.friendshipId)}
-                                />
-                            ))}
-                        </>
+                        !isAuthenticated ? (
+                            <LoginRequired />
+                        ) : (
+                            <>
+                                {state.loadingRequests && <MsgCenter text="Cargando solicitudes…" />}
+                                {state.errorRequests && !state.loadingRequests && <MsgCenter text={state.errorRequests} error />}
+                                {!state.loadingRequests && !state.errorRequests && state.pendingRequests.length === 0 && (
+                                    <MsgCenter text="No tienes solicitudes pendientes." />
+                                )}
+                                {!state.loadingRequests && !state.errorRequests && state.pendingRequests.map(req => (
+                                    <PendingRow
+                                        key={req.friendshipId}
+                                        request={req}
+                                        onAccept={() => handleAccept(req.friendshipId)}
+                                        onIgnore={() => handleIgnore(req.friendshipId)}
+                                    />
+                                ))}
+                            </>
+                        )
                     )}
 
                     {/* Pestaña: Buscar */}
                     {state.tab === 'search' && (
-                        <>
-                            <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid rgba(255,0,208,0.1)' }}>
-                                <div style={{ position: 'relative' }}>
-                                    <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
-                                    <input
-                                        type="text"
-                                        placeholder="Buscar por username…"
-                                        value={state.searchQuery}
-                                        onChange={e => dispatch({ searchQuery: e.target.value })}
-                                        autoFocus
-                                        style={{
-                                            width: '100%', paddingLeft: '32px', paddingRight: '0.75rem',
-                                            paddingTop: '0.5rem', paddingBottom: '0.5rem',
-                                            background: 'rgba(255,255,255,0.06)',
-                                            border: '1px solid rgba(255,0,208,0.25)', borderRadius: '8px',
-                                            color: 'var(--color-text)', fontFamily: 'var(--font-body)',
-                                            fontSize: '0.8125rem', outline: 'none', boxSizing: 'border-box',
-                                        }}
-                                    />
+                        !isAuthenticated ? (
+                            <LoginRequired />
+                        ) : (
+                            <>
+                                <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid rgba(255,0,208,0.1)' }}>
+                                    <div style={{ position: 'relative' }}>
+                                        <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', pointerEvents: 'none' }} />
+                                        <input
+                                            type="text"
+                                            placeholder="Buscar por username…"
+                                            value={state.searchQuery}
+                                            onChange={e => dispatch({ searchQuery: e.target.value })}
+                                            autoFocus
+                                            style={{
+                                                width: '100%', paddingLeft: '32px', paddingRight: '0.75rem',
+                                                paddingTop: '0.5rem', paddingBottom: '0.5rem',
+                                                background: 'rgba(255,255,255,0.06)',
+                                                border: '1px solid rgba(255,0,208,0.25)', borderRadius: '8px',
+                                                color: 'var(--color-text)', fontFamily: 'var(--font-body)',
+                                                fontSize: '0.8125rem', outline: 'none', boxSizing: 'border-box',
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
 
-                            {state.loadingSearch && <MsgCenter text="Buscando…" />}
-                            {!state.loadingSearch && state.searchQuery.trim().length >= 2 && state.searchResults.length === 0 && (
-                                <MsgCenter text="No se encontraron usuarios." />
-                            )}
-                            {!state.loadingSearch && state.searchQuery.trim().length < 2 && (
-                                <MsgCenter text="Escribe al menos 2 caracteres." />
-                            )}
-                            {!state.loadingSearch && state.searchResults.map(user => {
-                                const sentId = getSentFriendshipId(user.userId)
-                                const isFriend = state.friends.some(f => f.userId === user.userId)
-                                return (
-                                    <SearchRow
-                                        key={user.userId}
-                                        user={user}
-                                        isSent={!!sentId}
-                                        isFriend={isFriend}
-                                        onSend={() => handleSendRequest(user.userId)}
-                                        onCancel={() => handleCancelRequest(user.userId)}
-                                    />
-                                )
-                            })}
-                        </>
+                                {state.loadingSearch && <MsgCenter text="Buscando…" />}
+                                {!state.loadingSearch && state.searchQuery.trim().length >= 2 && state.searchResults.length === 0 && (
+                                    <MsgCenter text="No se encontraron usuarios." />
+                                )}
+                                {!state.loadingSearch && state.searchQuery.trim().length < 2 && (
+                                    <MsgCenter text="Escribe al menos 2 caracteres." />
+                                )}
+                                {!state.loadingSearch && state.searchResults.map(user => {
+                                    const sentId = getSentFriendshipId(user.userId)
+                                    const isFriend = state.friends.some(f => f.userId === user.userId)
+                                    return (
+                                        <SearchRow
+                                            key={user.userId}
+                                            user={user}
+                                            isSent={!!sentId}
+                                            isFriend={isFriend}
+                                            onSend={() => handleSendRequest(user.userId)}
+                                            onCancel={() => handleCancelRequest(user.userId)}
+                                        />
+                                    )
+                                })}
+                            </>
+                        )
                     )}
                 </div>
             </aside>
@@ -301,6 +327,43 @@ export default function FriendsSidebar({ isOpen, onClose }: Props) {
 }
 
 // ── Sub-componentes ──
+
+function LoginRequired() {
+    return (
+        <div
+            style={{
+                padding: '2rem 1rem',
+                textAlign: 'center',
+            }}
+        >
+            <p
+                style={{
+                    color: 'var(--color-text-muted)',
+                    fontFamily: 'var(--font-body)',
+                    marginBottom: '1rem',
+                }}
+            >
+                Debes iniciar sesión para usar esta función.
+            </p>
+
+            <a
+                href="/login"
+                style={{
+                    display: 'inline-block',
+                    padding: '0.6rem 1rem',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    background: 'var(--color-accent)',
+                    color: 'white',
+                    fontFamily: 'var(--font-cta)',
+                    fontSize: '0.875rem',
+                }}
+            >
+                Iniciar sesión
+            </a>
+        </div>
+    )
+}
 
 function MsgCenter({ text, error = false }: { text: string; error?: boolean }) {
     return (

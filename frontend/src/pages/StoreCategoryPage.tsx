@@ -72,6 +72,16 @@ export default function StoreCategoryPage({
                     {title}
                 </h1>
 
+                <p
+                    className="text-sm"
+                    style={{
+                        color: 'var(--color-text-muted)',
+                        marginBottom: '1rem',
+                    }}
+                >
+                    {games.length} juegos en esta página
+                </p>
+
                 <div
                     className="grid gap-6"
                     style={{

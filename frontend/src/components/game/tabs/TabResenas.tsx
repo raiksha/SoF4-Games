@@ -1,8 +1,8 @@
 import type { Game } from '../../../types'
 
 export default function TabResenas({ game }: { game: Game }) {
-  const total = game.total_positive + game.total_negative
-  const pct   = total > 0 ? Math.round((game.total_positive / total) * 100) : 0
+  const total = game.total_positive  + game.total_negative
+  const pct   = total > 0 ? Math.round((game.total_positive  / total) * 100) : 0
 
   return (
     <div className="pb-5" style={{ paddingTop: '1.5rem' }}>
@@ -42,8 +42,8 @@ export default function TabResenas({ game }: { game: Game }) {
           </div>
         </div>
       </div>
-      <p className="text-sm text-center" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-body)' }}>
-        Las reseñas individuales estarán disponibles cuando el backend esté conectado.
+      <p className="text-base text-center" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-body)', margin: '1rem', }}>
+        Resumen de reseñas de la comunidad de Steam.
       </p>
     </div>
   )

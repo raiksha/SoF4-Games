@@ -38,7 +38,6 @@ function AppContent() {
           <Route path="/library"  element={<LibraryPage />} />
           <Route path="/profile"  element={<ProfilePage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/friends"  element={<div>Amigos - por hacer</div>} />
         </Route>
       </Routes>
       <Footer />

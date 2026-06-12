@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import type { Game } from '../types'
 import { gameService } from '../services/gameService'
@@ -95,6 +96,29 @@ export default function StorePage() {
                 <GameSection title="Rebajas"          games={saleGames}     linkTo="/store/sales"     />
                 <GameSection title="Lo más reciente"   games={recentGames}   linkTo="/store/new"       />
                 <GameSection title="Mejor valorados"   games={topRatedGames} linkTo="/store/top-rated" />
+            </div>
+
+            {/* Ver catálogo completo */}
+            <div
+                className="flex justify-center py-6"
+            >
+                <Link
+                    to="/games"
+                    className="px-6 py-3 rounded-lg font-semibold transition-all duration-200"
+                    style={{
+                        fontFamily: 'var(--font-cta)',
+                        fontSize:   'clamp(0.9rem, 2vw, 1rem)',
+                        padding:    '0.5rem 2rem',
+                        color:      'var(--color-text)',
+                        background: 'rgba(255,0,208,0.1)',
+                        border:     '1px solid rgba(255,0,208,0.3)',
+                        textShadow: '0 0 12px var(--color-accent)',
+                        whiteSpace: 'nowrap',
+                        marginBottom: '2rem',
+                    }}
+                >
+                    Ver catálogo completo
+                </Link>
             </div>
 
         </main>

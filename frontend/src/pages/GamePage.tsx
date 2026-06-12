@@ -84,9 +84,9 @@ export default function GamePage() {
         website:              null,
         metacritic:           null,
         steam_tags:           [],
-        review_score_desc:    '',
-        total_positive:       0,
-        total_negative:       0,
+        review_score_desc:    game.reviewScoreDesc,
+        total_positive:       game.totalPositive,
+        total_negative:       game.totalNegative,
 
         // Screenshots: adaptamos pathThumbnail → path_thumbnail
         screenshots: game.screenshots.map(s => ({
@@ -198,7 +198,7 @@ export default function GamePage() {
                     <TabBar active={tab} onChange={setTab} />
                     {tab === 'descripcion' && <TabDescripcion game={gameForComponents} />}
                     {tab === 'requisitos'  && <TabRequisitos  game={gameForComponents} />}
-                    {tab === 'resenas'     && <TabResenas      game={gameForComponents} />}
+                    {tab === 'resenas'     && <TabResenas     game={gameForComponents} />}
                 </div>
             </div>
         </main>

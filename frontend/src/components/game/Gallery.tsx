@@ -25,6 +25,8 @@ export default function Gallery({ game }: { game: Game }) {
           alt={`${game.name} screenshot ${active + 1}`}
           className="w-full h-full object-cover"
           loading="lazy"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
         />
       </div>
 
@@ -48,6 +50,8 @@ export default function Gallery({ game }: { game: Game }) {
                 alt={`Thumbnail ${i + 1}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                draggable={false}
+                onDragStart={(e) => e.preventDefault()}
               />
             </button>
           ))}

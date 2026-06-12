@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { getCartItems, checkout } from '../services/cartService'
 import { getWalletBalance } from '../services/walletService'
 import type { CartItem, CheckoutResponse } from '../services/cartService'
+import { useCart } from '../context/CartContext'
 
 type PayMethod = 'card' | 'webpay' | 'wallet'
 
@@ -79,6 +80,7 @@ export default function CheckoutPage() {
   const [method, setMethod]             = useState<PayMethod>('card')
   const [walletBalance, setWalletBalance] = useState<number | null>(null)
   const [toast, setToast]               = useState(false)
+  const { refreshCart }                 = useCart()
 
   // Cupón siempre activo — viene del paso 1 o se auto-aplica aquí
   const COUPON_CODE = 'javalimos24'
@@ -136,6 +138,9 @@ export default function CheckoutPage() {
         coupon: hasCoupon ? couponFromCart : undefined,
         paymentMethod: method,
       })
+
+      await refreshCart()
+
       sessionStorage.removeItem('checkout_coupon')
       setConfirmation(result)
       window.scrollTo({ top: 0, behavior: 'smooth' })
