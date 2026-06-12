@@ -57,7 +57,6 @@ export default function StorePage() {
                         }}
                     />
                     Cargando juegos...
-                    {/* La animación "spin" está definida en index.css */}
                 </div>
             </main>
         )
