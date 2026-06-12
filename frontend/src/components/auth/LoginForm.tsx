@@ -16,6 +16,8 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
+    const [showRecoveryInfo, setShowRecoveryInfo] = useState(false)
+
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 
         e.preventDefault()
@@ -68,6 +70,38 @@ export default function LoginForm() {
                 onChange={setPassword}
                 required
             />
+
+            <button
+                type="button"
+                onClick={() => setShowRecoveryInfo(prev => !prev)}
+                style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    marginTop: '-0.5rem',
+                    textAlign: 'left',
+                    color: 'var(--color-accent)',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                }}
+            >
+                ¿Olvidaste tu contraseña?
+            </button>
+
+            {showRecoveryInfo && (
+                <div
+                    style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: '12px',
+                        padding: '0.75rem',
+                        fontSize: '0.85rem',
+                        color: 'var(--color-text-muted)',
+                    }}
+                >
+                    La recuperación de contraseña se encuentra planificada para una próxima versión de SoF4 Games.
+                </div>
+            )}
 
             {error && (
                 <AuthError message={error} />
