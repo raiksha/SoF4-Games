@@ -14,6 +14,10 @@ export default function LibraryPage() {
     const [hoveredStore, setHoveredStore] = useState(false)
 
     useEffect(() => {
+        sessionStorage.removeItem('checkout_completed')
+    }, [])
+
+    useEffect(() => {
         getLibrary()
             .then((data) => { setGames(data); setLoading(false) })
             .catch((err: Error) => { setError(err.message); setLoading(false) })
