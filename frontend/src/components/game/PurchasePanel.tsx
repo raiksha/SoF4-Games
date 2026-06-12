@@ -123,6 +123,7 @@ export default function PurchasePanel({ game }: { game: Game }) {
           { icon: <Gift size={14} />,  label: 'Regalar' },
         ].map(({ icon, label }) => (
           <button
+            disabled={true}
             key={label}
             className="py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200"
             style={{
@@ -131,6 +132,7 @@ export default function PurchasePanel({ game }: { game: Game }) {
               color:      'var(--color-text-muted)',
               border:     '1px solid var(--color-border)',
               padding:    '3px 10px',
+              cursor:     'default',
             }}
             onMouseEnter={e => {
               const el = e.currentTarget as HTMLElement
