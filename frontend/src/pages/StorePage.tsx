@@ -4,6 +4,10 @@ import type { Game } from '../types'
 import { gameService } from '../services/gameService'
 import HeroCarousel from '../components/store/HeroCarousel'
 import GameSection  from '../components/store/GameSection'
+import WishlistModal from '../components/store/WishlistModal'
+
+/** Clave de localStorage para no volver a mostrar el popup de wishlist */
+const WISHLIST_SEEN_KEY = 'sof4_wishlist_modal_seen'
 
 export default function StorePage() {
 
@@ -13,6 +17,19 @@ export default function StorePage() {
     const [topRatedGames, setTopRatedGames] = useState<Game[]>([])
     const [loading, setLoading] = useState(true)
     const [error,   setError]   = useState<string | null>(null)
+    const [showWishlist, setShowWishlist] = useState(false)
+
+    // Abrir el popup de wishlist solo en la primera visita
+    useEffect(() => {
+        if (localStorage.getItem(WISHLIST_SEEN_KEY)) return
+        const timer = setTimeout(() => setShowWishlist(true), 1200)
+        return () => clearTimeout(timer)
+    }, [])
+
+    const closeWishlist = () => {
+        localStorage.setItem(WISHLIST_SEEN_KEY, '1')
+        setShowWishlist(false)
+    }
 
     useEffect(() => {
         Promise.all([
@@ -77,6 +94,9 @@ export default function StorePage() {
 
     return (
         <main className="min-h-screen overflow-x-hidden" style={{ background: 'var(--color-bg)', paddingTop: 'var(--nav-height)' }}>
+
+            {/* Popup de captación de wishlist (campaña) */}
+            <WishlistModal isOpen={showWishlist} onClose={closeWishlist} />
 
             {/* Hero — full-width, fuera del contenedor */}
             <HeroCarousel games={heroGames} />
